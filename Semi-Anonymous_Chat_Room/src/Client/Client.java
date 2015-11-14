@@ -2,9 +2,14 @@ package Client;
 import java.io.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 public class Client extends JFrame{
 
 	private JTextField j_input;
@@ -14,7 +19,7 @@ public class Client extends JFrame{
 	private Socket sock;
 	private String message = "";
 	private String IP = "localhost";//host
-	
+	private String realName;
 	public Client()
 	{
 		super("Client");
@@ -107,7 +112,7 @@ public class Client extends JFrame{
 			}
 			catch(ClassNotFoundException cnfe)
 			{
-				showMessage("I dont know what user send");
+				showMessage("I dont know what user send.");
 			}
 		}while(!message.equals("SERVER - END"));
 	}
@@ -115,9 +120,12 @@ public class Client extends JFrame{
 	private void sendMessage(String message) {
 		// TODO Auto-generated method stub
 		try{
-			output.writeObject("Client - "+ message);
+			output.writeObject(message);
 			output.flush();
-			showMessage("Client - "+ message);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			Calendar cal = Calendar.getInstance();
+
+			showMessage(realName + " - " +dateFormat.format(cal.getTime())+"\n" + message);
 		}
 		catch(IOException ie)
 		{
@@ -135,14 +143,16 @@ public class Client extends JFrame{
 		output = new ObjectOutputStream(sock.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(sock.getInputStream());
-		showMessage("Stream ready.");
 	}
 
-	private void connect() throws UnknownHostException, IOException, ConnectException {
+	private void connect() throws UnknownHostException, ConnectException {
 		// TODO Auto-generated method stub
-		showMessage("Attempt connecting...");
+		try{
 		sock = new Socket(IP,6789);
-		showMessage("Connected.");
+		}
+		catch(IOException ie)
+		{
+		}
 	}
 	public static void main(String[] args)
 	{

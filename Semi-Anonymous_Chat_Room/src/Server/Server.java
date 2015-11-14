@@ -15,11 +15,11 @@ public class Server<ref> extends JFrame{
 		private ServerSocket server;
 		private Socket sock;
 		private ArrayList<Waiter> al;
-		
+		private int count ; // count how many times people logged.
 		public Server()
 		{
 			super("Server");
-			
+			al = new ArrayList<Waiter>();
 			j_public = new JTextArea();
 			j_public.setAutoscrolls(true);
 			j_public.setEditable(false);
@@ -39,21 +39,26 @@ public class Server<ref> extends JFrame{
 		public void startRunning(){
 			try{
 				server = new ServerSocket(6789, 999);
+				Waiter waiter ;
 				while(true)
 				{
 					try{
-						Waiter waiter = new Waiter(j_public);
+						waiter = new Waiter(j_public,al,count);
 						waiter.serve(server);
 						waiter.start();
 						al.add(waiter);
+						count++;
 					}
 					catch(Exception eofe)
 					{
 						showMessage("Server Ended Connection");
 					}
-					finally{
-						close();
-					}
+//					finally{
+//						for(int i = 0 ; i < al.size(); ++i)
+//						{
+//							al.get(i).close();
+//						}
+//					}
 				}
 			}
 			catch(IOException ex)
@@ -61,23 +66,6 @@ public class Server<ref> extends JFrame{
 				ex.printStackTrace();
 			}
 		}
-		
-		private void close() {
-			// TODO Auto-generated method stub
-			showMessage("Closing connection");
-			try {
-				if(output!=null)
-					output.close();
-				if(input!=null)
-					input.close();
-				if(sock!=null)
-					sock.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
 		private void showMessage(final String txt) {
 			// TODO Auto-generated method stub
 			SwingUtilities.invokeLater(
