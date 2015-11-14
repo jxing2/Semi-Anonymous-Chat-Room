@@ -7,38 +7,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.util.ArrayList;
-public class Server extends JFrame{
+public class Server<ref> extends JFrame{
 
-		private JTextField j_input;
 		private JTextArea j_public;
 		private ObjectOutputStream output;
 		private ObjectInputStream input;
 		private ServerSocket server;
 		private Socket sock;
-		private ArrayList al;
+		private ArrayList<Waiter> al;
 		
 		public Server()
 		{
 			super("Server");
-			j_input = new JTextField();
-			ableToType(false);
-			j_input.addActionListener(
-					new ActionListener(){
-						public void actionPerformed(ActionEvent e)
-						{
-							sendMessage(e.getActionCommand());
-							j_input.setText("");
-						}
-			});
-			
-			add(j_input , BorderLayout.SOUTH);
-			//----------------------------------------
 			
 			j_public = new JTextArea();
-			
+			j_public.setAutoscrolls(true);
+			j_public.setEditable(false);
 			add(new JScrollPane(j_public));
-			
-			
 			
 			addWindowListener
 			(
@@ -53,13 +38,14 @@ public class Server extends JFrame{
 		
 		public void startRunning(){
 			try{
-				server = new ServerSocket(6789, 3);
+				server = new ServerSocket(6789, 999);
 				while(true)
 				{
 					try{
-						waitForConnection();
-						setupStreams();
-						whileChatting();
+						Waiter waiter = new Waiter(j_public);
+						waiter.serve(server);
+						waiter.start();
+						al.add(waiter);
 					}
 					catch(Exception eofe)
 					{
@@ -79,7 +65,6 @@ public class Server extends JFrame{
 		private void close() {
 			// TODO Auto-generated method stub
 			showMessage("Closing connection");
-			ableToType(false);
 			try {
 				if(output!=null)
 					output.close();
@@ -92,12 +77,7 @@ public class Server extends JFrame{
 				e.printStackTrace();
 			}
 		}
-
-		private void ableToType(boolean b) {
-			// TODO Auto-generated method stub
-			j_input.setEditable(b);
-		}
-
+		
 		private void showMessage(final String txt) {
 			// TODO Auto-generated method stub
 			SwingUtilities.invokeLater(
@@ -109,52 +89,6 @@ public class Server extends JFrame{
 					);
 		}
 
-		private void whileChatting() throws IOException {
-			// TODO Auto-generated method stub
-			String message = "connected\n";
-			sendMessage(message);
-			ableToType(true);
-			do{
-				try{
-					message = String.valueOf(input.readObject());
-					showMessage(message);
-				}
-				catch(ClassNotFoundException cnfe)
-				{
-					showMessage("I dont know what user send");
-				}
-			}while(!message.equals("SERVER - END"));
-		}
-
-		private void setupStreams() throws IOException {
-			// TODO Auto-generated method stub
-			output = new ObjectOutputStream(sock.getOutputStream());
-			output.flush();
-			input = new ObjectInputStream(sock.getInputStream());
-		}
-
-		private void waitForConnection() {
-			// TODO Auto-generated method stub
-			try {
-				sock = server.accept();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		private void sendMessage(String message) {
-			// TODO Auto-generated method stub
-			try{
-				output.writeObject("Client - "+ message);
-				output.flush();
-				showMessage("Client - "+ message );
-			}
-			catch(IOException ie)
-			{
-				j_public.append("Something WRONG");
-			}
-		}
 		public static void main(String[] args)
 		{
 			Server server = new Server();

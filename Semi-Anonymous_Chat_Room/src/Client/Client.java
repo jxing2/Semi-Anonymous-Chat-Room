@@ -33,9 +33,9 @@ public class Client extends JFrame{
 		//----------------------------------------
 		
 		j_public = new JTextArea();
-		
+		j_public.setEditable(false);
 		add(new JScrollPane(j_public),BorderLayout.CENTER);
-		
+		j_public.setAutoscrolls(true);
 		
 		addWindowListener
 		(
