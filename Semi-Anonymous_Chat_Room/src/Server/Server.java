@@ -66,6 +66,11 @@ public class Server<ref> extends JFrame{
 				ex.printStackTrace();
 			}
 		}
+		/*
+		 * 
+		 * 
+		 * 
+		 */
 		private void showMessage(final String txt) {
 			// TODO Auto-generated method stub
 			SwingUtilities.invokeLater(
