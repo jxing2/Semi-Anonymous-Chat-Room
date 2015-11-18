@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Account>
-<User ID="xing" PWD="123456" type="1">
-<User ID="kruger" PWD="123456" type="0">
+<User ID="xing" PWD="123456" type="1" />
+<User ID="kruger" PWD="123456" type="0" />
 </Account>
 
