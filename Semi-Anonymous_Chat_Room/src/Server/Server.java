@@ -78,11 +78,8 @@ public class Server<ref> extends JFrame {
 				{
 					if(socketInfo.item(i).getNodeName().equals("Socket"))
 					{
-						//System.out.println("Found Socket");
-						String socket_IP = socketInfo.item(i).getAttributes().item(0).getNodeValue().toString();
-						String socket_Port = socketInfo.item(i).getAttributes().item(1).getNodeValue().toString();
-						System.out.println(socket_IP);
-						System.out.println(socket_Port);
+						IP = socketInfo.item(i).getAttributes().item(0).getNodeValue().toString();
+						port = Integer.parseInt(socketInfo.item(i).getAttributes().item(1).getNodeValue().toString());
 						break;
 					}
 				}
@@ -133,6 +130,6 @@ public class Server<ref> extends JFrame {
 
 	public static void main(String[] args) {
 		Server server = new Server();
-		// server.startRunning();
+		server.startRunning();
 	}
 }
