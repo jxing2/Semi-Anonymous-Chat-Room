@@ -2,6 +2,14 @@ package Client;
 import java.io.*;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,8 +26,10 @@ public class Client extends JFrame{
 	private ObjectInputStream input;
 	private Socket sock;
 	private String message = "";
-	private String IP = "localhost";//host
+	private String IP ;//host
+	private int port;
 	private String realName;
+	private Document doc;
 	public Client()
 	{
 		super("Client");
@@ -51,6 +61,46 @@ public class Client extends JFrame{
 		 } );
 		setSize(580,380);
 		this.setVisible(true);
+		readXML();
+	}
+	
+	private void readXML() {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			this.doc = builder.parse("./Client_Configuration.xml");
+		} catch (ParserConfigurationException e) {
+			System.out.println(e.getMessage());
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		NodeList root = doc.getChildNodes();
+		// System.out.println(root);
+		Node nodes = root.item(0);
+		NodeList info = nodes.getChildNodes();
+		
+		for(int j = 0 ; j < info.getLength(); ++j)
+		{
+			//System.out.println(info.item(j).getNodeName());
+			if(info.item(j).getNodeName().equals("Configuration"))
+			{
+				NodeList socketInfo = info.item(j).getChildNodes();
+				for(int i = 0 ; i < socketInfo.getLength();++i)
+				{
+					if(socketInfo.item(i).getNodeName().equals("Socket"))
+					{
+						IP = socketInfo.item(i).getAttributes().item(0).getNodeValue().toString();
+						port = Integer.parseInt(socketInfo.item(i).getAttributes().item(1).getNodeValue().toString());
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	public void startRunning(){
