@@ -61,7 +61,7 @@ public class Client extends JFrame{
 		}
 		catch(EOFException eofe)
 		{
-			showMessage("Client terminated connection");
+			showMessage("connection terminated!");
 		}
 		catch(IOException ie)
 		{
