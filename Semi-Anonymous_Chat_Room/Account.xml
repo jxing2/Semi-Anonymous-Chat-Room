@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Account>
-<User ID="xing" PWD="123456" type="1" />
-<User ID="kruger" PWD="123456" type="0" />
+	<UserList>
+		<User ID="xing" PWD="123456" Type="1" />
+		<User ID="fan" PWD="123456" Type="1" />
+		<User ID="li" PWD="123456" Type="1" />
+		<User ID="kruger" PWD="123456" Type="0" />
+	</UserList>
+	<Configuration>
+		<Socket IP="127.0.0.1" Port="6789"/>
+	</Configuration>
 </Account>
 
