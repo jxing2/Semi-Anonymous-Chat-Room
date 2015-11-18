@@ -53,7 +53,7 @@ public class Server<ref> extends JFrame {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			this.doc = builder.parse("./Account.xml");
+			this.doc = builder.parse("./Server_Account.xml");
 		} catch (ParserConfigurationException e) {
 			System.out.println(e.getMessage());
 		} catch (SAXException e) {
