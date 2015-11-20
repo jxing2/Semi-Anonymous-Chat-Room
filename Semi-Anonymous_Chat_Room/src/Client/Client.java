@@ -60,6 +60,18 @@ public class Client extends JFrame{
 			 }
 		 } );
 		 
+		JMenuBar Bar= new JMenuBar();
+		JMenuItem Item1 = new JMenuItem("Chat History");
+		JMenuItem Item2 = new JMenuItem("File History");
+		JMenu menu= new JMenu("View");
+		
+		Bar.add(menu);
+		menu.add(Item1);
+		menu.add(Item2);
+		Item1.addActionListener(null);
+		Item2.addActionListener(null);
+	    setJMenuBar(Bar);
+		
 		setSize(580,380);
 		this.setVisible(true);
 		readXML();
