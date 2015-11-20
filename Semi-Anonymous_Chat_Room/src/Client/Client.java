@@ -59,6 +59,7 @@ public class Client extends JFrame{
 				 System.exit(0);
 			 }
 		 } );
+		 
 		setSize(580,380);
 		this.setVisible(true);
 		readXML();
