@@ -111,13 +111,21 @@ public class Client extends JFrame{
 		// TODO Auto-generated method stub
 		//pop out a window to choose a file
 		JFrame chooserWindow = new JFrame();
+		JTextField filename= new JTextField();//display the file you choose
+		JButton choose = new JButton("choose");
+		JButton confrim = new JButton("Confrim");//pop out chooser window when clicked
+		JButton cancle = new JButton("Cancle");
+		
+		chooserWindow.getContentPane().add(filename);
+		chooserWindow.pack();
+		chooserWindow.setVisible(true);
+		//chooserWindow.getContentPane().add(fileChooser);
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setDialogTitle("Choose a file");
 		fileChooser.setVisible(true);
-		chooserWindow.getContentPane().add(fileChooser);
+		
 		//System.out.println(JFileChooser.CANCEL_OPTION);
-		chooserWindow.pack();
-		chooserWindow.setVisible(true);
+		
 	}
 	private void downloadFile() {
 		// TODO Auto-generated method stub
