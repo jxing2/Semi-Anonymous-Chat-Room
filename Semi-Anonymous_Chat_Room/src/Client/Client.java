@@ -32,6 +32,7 @@ public class Client extends JFrame{
 	private String realName;
 	private Document doc;
 	JMenuBar bar;
+	Sign_Up sign_up;
 	public Client()
 	{
 		super("Client");
@@ -106,6 +107,7 @@ public class Client extends JFrame{
 	    });
 	    setJMenuBar(bar);
 		setSize(580,380);
+		centreWindow(this);
 	}
 	protected void sendFile() {
 		// TODO Auto-generated method stub
@@ -137,6 +139,7 @@ public class Client extends JFrame{
 	}
 	private void signUp() {
 		// TODO Auto-generated method stub
+		sign_up = new Sign_Up();
 	}
 	private void readXML() {
 		try {
@@ -273,11 +276,17 @@ public class Client extends JFrame{
 	private void connect() throws UnknownHostException, ConnectException {
 		// TODO Auto-generated method stub
 		try{
-		sock = new Socket(IP,6789);
+			sock = new Socket(IP,6789);
 		}
 		catch(IOException ie)
 		{
 		}
+	}
+	public static void centreWindow(Window frame) {
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+	    frame.setLocation(x, y);
 	}
 	public static void main(String[] args)
 	{
