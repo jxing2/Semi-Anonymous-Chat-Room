@@ -27,7 +27,7 @@ public class Server<ref> extends JFrame {
 	private int count; // count how many times people logged.
 	private String IP;
 	private int port;
-
+	KickDeadUser kick ;
 	private Document doc;
 
 	public Server() {
@@ -36,6 +36,7 @@ public class Server<ref> extends JFrame {
 		j_public = new JTextArea();
 		j_public.setAutoscrolls(true);
 		j_public.setEditable(false);
+		
 		add(new JScrollPane(j_public));
 
 		addWindowListener(new WindowAdapter() {
@@ -103,6 +104,8 @@ public class Server<ref> extends JFrame {
 		try {
 			server = new ServerSocket(port, 999);
 			Waiter waiter;
+			kick = new KickDeadUser(); 
+			kick.start();
 			while (true) {
 				try {
 					waiter = new Waiter(j_public, al, count);
@@ -131,5 +134,30 @@ public class Server<ref> extends JFrame {
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.startRunning();
+	}
+	
+	
+	private class KickDeadUser extends Thread {
+		public void run() {  
+			while(true)
+			{
+				for(int i = 0 ; i < al.size(); i++)
+				{
+					if(!al.get(i).isAlive())
+					{
+						System.out.println(al.get(i).nickName+ " is removed");
+						al.remove(i);
+						i--;
+						
+					}
+				}
+				try {
+					Thread.sleep(90);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

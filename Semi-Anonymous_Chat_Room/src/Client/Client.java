@@ -30,9 +30,11 @@ public class Client extends JFrame{
 	private int port;
 	private String realName;
 	private Document doc;
+	JMenuBar bar;
 	public Client()
 	{
 		super("Client");
+		readXML();
 		j_input = new JTextField();
 		ableToType(false);
 		j_input.addActionListener(
@@ -60,21 +62,32 @@ public class Client extends JFrame{
 			 }
 		 } );
 		 
-		JMenuBar Bar= new JMenuBar();
-		JMenuItem Item1 = new JMenuItem("Chat History");
-		JMenuItem Item2 = new JMenuItem("File History");
-		JMenu menu= new JMenu("View");
+		bar= new JMenuBar();
+		JMenuItem Item1 = new JMenuItem("Sign in");
+		JMenuItem Item2 = new JMenuItem("Sign up");
+		JMenuItem Item3 = new JMenuItem("Exit");
+		JMenuItem Item4 = new JMenuItem("Send file");
+		JMenuItem Item5 = new JMenuItem("Download file");
+		JMenu account= new JMenu("Account");
+		JMenu file= new JMenu("File");
 		
-		Bar.add(menu);
-		menu.add(Item1);
-		menu.add(Item2);
+		bar.add(account);
+		bar.add(file);
+		account.add(Item1);
+		account.add(Item2);
+		account.add(Item3);
+		file.add(Item4);
+		file.add(Item5);
 		Item1.addActionListener(null);
 		Item2.addActionListener(null);
-	    setJMenuBar(Bar);
+		Item3.addActionListener(null);
+		Item4.addActionListener(null);
+		Item5.addActionListener(null);
+	    setJMenuBar(bar);
 		
 		setSize(580,380);
 		this.setVisible(true);
-		readXML();
+		
 	}
 	
 	private void readXML() {

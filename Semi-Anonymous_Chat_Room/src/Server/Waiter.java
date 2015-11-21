@@ -19,8 +19,9 @@ public class Waiter extends Thread {
 	public Socket sock;
 	private JTextArea j_public;
 	private ArrayList<Waiter> al;
-	private String nickName;
-	private String realName;
+	public String nickName;
+	public String realName;
+	public boolean flag;
 	public Waiter(JTextArea j_public,ArrayList<Waiter> al, int count)
 	{
 		this.j_public = j_public;
@@ -58,7 +59,8 @@ public class Waiter extends Thread {
 		}
 		catch(IOException ie)
 		{
-			j_public.append("Something WRONG");
+			//j_public.append("Something WRONG");
+			flag = false;
 			ie.getStackTrace();
 		}
 	}
@@ -74,7 +76,8 @@ public class Waiter extends Thread {
 		}
 		catch(IOException ie)
 		{
-			j_public.append("Something WRONG");
+			//j_public.append("Something WRONG");
+			flag = false;
 			ie.getStackTrace();
 		}
 	}
@@ -116,6 +119,7 @@ public class Waiter extends Thread {
 		}
 	}
 	public void run() {  
+		flag = true;
 		String message = nickName + " connected";
 		sendMessage(message);
 		SendToOthers(message);
@@ -125,18 +129,20 @@ public class Waiter extends Thread {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				showMessage(nickName + " - "+ dateFormat.format(cal.getTime())+"\n" + message );
-				System.out.println(message);
+				//System.out.println(message);
 				SendToOthers(message);
 			}
 			catch(ClassNotFoundException cnfe)
 			{
+				flag = false;
 				showMessage("I dont know what user send");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				//close();
+				flag = false;
 			}
-		}while(!message.equals("SERVER - END"));
+		}while((!message.equals("SERVER - END"))&&flag);
 	}  
 
 }
