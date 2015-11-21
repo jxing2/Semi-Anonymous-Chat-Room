@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.swing.*;
+
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -111,23 +111,8 @@ public class Client extends JFrame{
 	}
 	protected void sendFile() {
 		// TODO Auto-generated method stub
-		//pop out a window to choose a file
-		JFrame chooserWindow = new JFrame();
-		JTextField filename= new JTextField();//display the file you choose
-		JButton choose = new JButton("choose");
-		JButton confrim = new JButton("Confrim");//pop out chooser window when clicked
-		JButton cancle = new JButton("Cancle");
-		
-		chooserWindow.getContentPane().add(filename);
-		chooserWindow.pack();
-		chooserWindow.setVisible(true);
-		//chooserWindow.getContentPane().add(fileChooser);
-		JFileChooser fileChooser = new JFileChooser();
-		fileChooser.setDialogTitle("Choose a file");
-		fileChooser.setVisible(true);
-		
-		//System.out.println(JFileChooser.CANCEL_OPTION);
-		
+		//pop out a window to choose a file	
+		ChooserWindow chooserwindow = new ChooserWindow();
 	}
 	private void downloadFile() {
 		// TODO Auto-generated method stub
