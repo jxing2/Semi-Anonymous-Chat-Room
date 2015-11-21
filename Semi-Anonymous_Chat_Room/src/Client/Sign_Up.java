@@ -85,6 +85,6 @@ public class Sign_Up extends JFrame{
 			JOptionPane.showMessageDialog(this, "Password does not match!");
 			return;
 		}
-		parent.sendMessage("@register"+name_txt.getText()+"\n"+pwd_txt.getText());
+		parent.sendMessage(name_txt.getText()+"\n"+pwd_txt.getText(),CommandType.Register);
 	}
 }
