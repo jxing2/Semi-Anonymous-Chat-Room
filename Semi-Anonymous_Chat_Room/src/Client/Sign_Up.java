@@ -63,9 +63,26 @@ public class Sign_Up extends JFrame{
 	}
 	protected void confirm() {
 		// TODO Auto-generated method stub
+		if(!name_txt.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(this, "Name cannot be empty!");
+			return;
+		}
+		if(!pwd_txt.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(this, "Password cannot be empty!");
+			return;
+		}
+		if(!again_pwd_txt.getText().equals(""))
+		{
+			JOptionPane.showMessageDialog(this, "Please confirm your Password!");
+			return;
+		}
 		if(!pwd_txt.getText().equals(again_pwd.getText()))
 		{
-			
+			JOptionPane.showMessageDialog(this, "Password does not match!");
+			return;
 		}
+		
 	}
 }
