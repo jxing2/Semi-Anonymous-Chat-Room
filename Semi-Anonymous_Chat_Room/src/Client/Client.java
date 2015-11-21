@@ -63,33 +63,67 @@ public class Client extends JFrame{
 		 } );
 		 
 		bar= new JMenuBar();
-		JMenuItem Item1 = new JMenuItem("Sign in");
-		JMenuItem Item2 = new JMenuItem("Sign up");
-		JMenuItem Item3 = new JMenuItem("Exit");
-		JMenuItem Item4 = new JMenuItem("Send file");
-		JMenuItem Item5 = new JMenuItem("Download file");
+		JMenuItem signIn = new JMenuItem("Sign in");
+		JMenuItem signUp = new JMenuItem("Sign up");
+		JMenuItem exit = new JMenuItem("Exit");
+		JMenuItem sendFile = new JMenuItem("Send file");
+		JMenuItem downloadFile = new JMenuItem("Download file");
 		JMenu account= new JMenu("Account");
 		JMenu file= new JMenu("File");
 		
 		bar.add(account);
 		bar.add(file);
-		account.add(Item1);
-		account.add(Item2);
-		account.add(Item3);
-		file.add(Item4);
-		file.add(Item5);
-		Item1.addActionListener(null);
-		Item2.addActionListener(null);
-		Item3.addActionListener(null);
-		Item4.addActionListener(null);
-		Item5.addActionListener(null);
+		account.add(signIn);
+		account.add(signUp);
+		account.add(exit);
+		file.add(sendFile);
+		file.add(downloadFile);
+		signIn.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent actionEvent) {
+	        	signIn();
+	        }
+	    });
+		signUp.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent actionEvent) {
+	        	signUp();
+	        }
+	    });
+		exit.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent actionEvent) {
+	        	System.exit(0);
+	        }
+	    });
+		sendFile.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent actionEvent) {
+	        	sendFile();
+	        }
+	    });
+		downloadFile.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent actionEvent) {
+	        	downloadFile();
+	        }
+	    });
 	    setJMenuBar(bar);
 		
 		setSize(580,380);
 		this.setVisible(true);
 		
 	}
-	
+	protected void sendFile() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void downloadFile() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void signIn() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void signUp() {
+		// TODO Auto-generated method stub
+	}
 	private void readXML() {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
