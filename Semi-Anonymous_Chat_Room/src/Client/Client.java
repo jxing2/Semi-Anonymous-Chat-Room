@@ -131,7 +131,7 @@ public class Client extends JFrame{
 	}
 	private void signUp() {
 		// TODO Auto-generated method stub
-		sign_up = new Sign_Up();
+		sign_up = new Sign_Up(this);
 	}
 	private void readXML() {
 		try {
@@ -237,7 +237,7 @@ public class Client extends JFrame{
 		}while(!message.equals("SERVER - END"));
 	}
 
-	private void sendMessage(String message) {
+	public void sendMessage(String message) {
 		// TODO Auto-generated method stub
 		try{
 			output.writeObject(message);

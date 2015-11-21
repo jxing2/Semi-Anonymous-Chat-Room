@@ -20,8 +20,10 @@ public class Sign_Up extends JFrame{
 	private int interval = 40;
 	private int leftMargin=30;
 	private int width = 241;
-	public Sign_Up()
+	Client parent;
+	public Sign_Up(Client parent)
 	{
+		this.parent = parent;
 		pane = getContentPane();
 		pane.setLayout(null);
 		name = new JLabel("Name :");
@@ -63,26 +65,26 @@ public class Sign_Up extends JFrame{
 	}
 	protected void confirm() {
 		// TODO Auto-generated method stub
-		if(!name_txt.getText().equals(""))
+		if(name_txt.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Name cannot be empty!");
 			return;
 		}
-		if(!pwd_txt.getText().equals(""))
+		if(pwd_txt.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Password cannot be empty!");
 			return;
 		}
-		if(!again_pwd_txt.getText().equals(""))
+		if(again_pwd_txt.getText().equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Please confirm your Password!");
 			return;
 		}
-		if(!pwd_txt.getText().equals(again_pwd.getText()))
+		if(!pwd_txt.getText().equals(again_pwd_txt.getText()))
 		{
 			JOptionPane.showMessageDialog(this, "Password does not match!");
 			return;
 		}
-		
+		parent.sendMessage("@register"+name_txt.getText()+"\n"+pwd_txt.getText());
 	}
 }
