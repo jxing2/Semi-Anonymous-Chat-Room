@@ -104,10 +104,7 @@ public class Client extends JFrame{
 	        }
 	    });
 	    setJMenuBar(bar);
-		
 		setSize(580,380);
-		this.setVisible(true);
-		
 	}
 	protected void sendFile() {
 		// TODO Auto-generated method stub
@@ -167,6 +164,7 @@ public class Client extends JFrame{
 		try{
 			connect();
 			setupStreams();
+			this.setVisible(true);
 			whileChatting();
 		}
 		catch(EOFException eofe)

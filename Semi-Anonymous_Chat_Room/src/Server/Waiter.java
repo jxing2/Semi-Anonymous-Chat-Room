@@ -21,6 +21,8 @@ public class Waiter extends Thread {
 	private ArrayList<Waiter> al;
 	public String nickName;
 	public String realName;
+	private enum Type{Teacher, Student}
+	private Type type;
 	public boolean flag;
 	public Waiter(JTextArea j_public,ArrayList<Waiter> al, int count)
 	{
