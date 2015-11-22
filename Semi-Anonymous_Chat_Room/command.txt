@@ -1,4 +1,0 @@
-@0 plain text
-@1 register
-@2 login
-@3 edit profile

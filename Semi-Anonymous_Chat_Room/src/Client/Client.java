@@ -124,7 +124,7 @@ public class Client extends JFrame{
 	}
 	private void signUp() {
 		// TODO Auto-generated method stub
-		sign_up = new Sign_Up();
+		sign_up = new Sign_Up(this);
 	}
 	private void readXML() {
 		try {
@@ -230,22 +230,39 @@ public class Client extends JFrame{
 		}while(!message.equals("SERVER - END"));
 	}
 
-	private void sendMessage(String message) {
+	public void sendMessage(String message) {
 		// TODO Auto-generated method stub
+		sendMessage(message,CommandType.PlainText);
+	}
+	public void sendMessage(String message, CommandType type) {
+		String tmp = "";
 		try{
-			output.writeObject(message);
-			output.flush();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
-
-			showMessage(realName + " - " +dateFormat.format(cal.getTime())+"\n" + message);
+			switch(type)
+			{
+			case PlainText:
+				tmp = "@0 " + message;
+				showMessage(realName + " - " +dateFormat.format(cal.getTime())+"\n" + message);
+				break;
+			case Register:
+				tmp = "@1 " + message;
+			case Login:
+				tmp = "@2 " + message;
+			case EditProfile:
+				tmp = "@3 " + message;
+				break;
+			default:
+					return;//do nothing
+			}
+			output.writeObject(tmp);
+			output.flush();
 		}
 		catch(IOException ie)
 		{
 			j_public.append("Something WRONG");
 		}
 	}
-
 	private void ableToType(boolean b) {
 		// TODO Auto-generated method stub
 		j_input.setEditable(b);
