@@ -38,9 +38,10 @@ public class Client extends JFrame {
 	JMenuBar bar;
 	Sign_Up sign_up;
 	Sign_In login;
+	Change_PWD chang_PWD;
 	JScrollPane jsp;
 	private boolean isLogined = false;
-	
+
 	public Client() {
 		super("Client");
 		readXML();
@@ -60,7 +61,7 @@ public class Client extends JFrame {
 		j_public.setEditable(false);
 		add(jsp = new JScrollPane(j_public), BorderLayout.CENTER);
 		j_public.setAutoscrolls(true);
-		
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -87,10 +88,11 @@ public class Client extends JFrame {
 		file.add(downloadFile);
 		signIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				if(!isLogined)
+				if (!isLogined)
 					signIn();
 				else
-					JOptionPane.showMessageDialog(null,"You have already signed in.");
+					JOptionPane.showMessageDialog(null,
+							"You have already signed in.");
 			}
 		});
 		signUp.addActionListener(new ActionListener() {
@@ -125,7 +127,7 @@ public class Client extends JFrame {
 
 	protected void changePWD() {
 		// TODO Auto-generated method stub
-		
+		chang_PWD = new Change_PWD(this, realName);
 	}
 
 	protected void sendFile() {
@@ -232,7 +234,7 @@ public class Client extends JFrame {
 	private void whileChatting() throws IOException {
 		// TODO Auto-generated method stub
 		String message = "";
-		//ableToType(true);
+		// ableToType(true);
 		do {
 			try {
 				j_public.setCaretPosition(j_public.getDocument().getLength());
@@ -245,25 +247,36 @@ public class Client extends JFrame {
 					break;
 				case 1:
 					JOptionPane.showMessageDialog(sign_up, m.message);
-					if(sign_up!=null)
+					if (sign_up != null)
 						sign_up.clear();
 					break;
 				case 2:
 					JOptionPane.showMessageDialog(sign_up, m.message);
-					if(sign_up!=null)
+					if (sign_up != null)
 						sign_up.close();
 					break;
 				case 3:
 					JOptionPane.showMessageDialog(login, m.message);
-					if(login!=null)
+					if (login != null)
 						login.clear();
 					break;
 				case 4:
-					//JOptionPane.showMessageDialog(login, m.message);
-					if(login!=null)
+					// JOptionPane.showMessageDialog(login, m.message);
+					if (login != null)
 						login.close();
 					ableToType(true);
 					isLogined = true;
+					realName = login.getRealName();
+					break;
+				case 5:
+					JOptionPane.showMessageDialog(chang_PWD, m.message);
+					if (chang_PWD != null)
+						chang_PWD.clear();
+					break;
+				case 6:
+					JOptionPane.showMessageDialog(chang_PWD, m.message);
+					if (chang_PWD != null)
+						chang_PWD.close();
 					break;
 				default:
 					return;

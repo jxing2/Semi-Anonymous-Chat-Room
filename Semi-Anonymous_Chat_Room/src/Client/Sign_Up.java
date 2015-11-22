@@ -57,7 +57,21 @@ public class Sign_Up extends JFrame{
 					}
 		});
 		
-		
+		name_txt.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				confirm();
+			}
+		});
+		pwd_txt.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				confirm();
+			}
+		});
+		again_pwd_txt.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				confirm();
+			}
+		});
 		setSize(300,400);
 		Client.centreWindow(this);
 		setResizable(false);
@@ -77,7 +91,7 @@ public class Sign_Up extends JFrame{
 		}
 		if(String.valueOf(again_pwd_txt.getPassword()).equals(""))
 		{
-			JOptionPane.showMessageDialog(this, "Please confirm your Password!");
+			JOptionPane.showMessageDialog(this, "Please confirm your password!");
 			return;
 		}
 		if(!String.valueOf(pwd_txt.getPassword()).equals(String.valueOf(again_pwd_txt.getPassword())))

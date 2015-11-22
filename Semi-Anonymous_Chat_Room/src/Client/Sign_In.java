@@ -21,6 +21,8 @@ public class Sign_In extends JFrame{
 	private int leftMargin=30;
 	private int width = 241;
 	Client parent;
+	
+	private String realName = "";
 	public Sign_In(Client parent)
 	{
 		this.parent = parent;
@@ -51,7 +53,16 @@ public class Sign_In extends JFrame{
 						login();
 					}
 		});
-		
+		name_txt.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				login();
+			}
+		});
+		pwd_txt.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				login();
+			}
+		});
 		
 		setSize(300,300);
 		Client.centreWindow(this);
@@ -70,6 +81,7 @@ public class Sign_In extends JFrame{
 			JOptionPane.showMessageDialog(this, "Password cannot be empty!");
 			return;
 		}
+		realName = name_txt.getText();
 		parent.sendMessage(name_txt.getText().trim()+"\n"+String.valueOf(pwd_txt.getPassword()),CommandType.Login);
 	}
 	public void clear() {
@@ -84,5 +96,9 @@ public class Sign_In extends JFrame{
 	public void close() {
 		// TODO Auto-generated method stub
 		this.dispose();
+	}
+	public String getRealName() {
+		// TODO Auto-generated method stub
+		return realName;
 	}
 }

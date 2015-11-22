@@ -75,14 +75,14 @@ public class Waiter extends Thread {
 		setupStreams();
 	}
 
-	private void sendMessage(String message, String nickName) {
+	private void sendMessage(String message, String nickName, boolean isTrim) {
 		// TODO Auto-generated method stub
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			output.writeObject("@00" + nickName + " - "
 					+ dateFormat.format(cal.getTime()) + "\n"
-					+ message.substring(3, message.length()));
+					+ (isTrim?message.substring(3, message.length()):message));
 			output.flush();
 		} catch (IOException ie) {
 			// j_public.append("Something WRONG");
@@ -129,6 +129,14 @@ public class Waiter extends Thread {
 						+ "\n" + message);
 				isLogined = true;
 				break;
+			case EditProfile_Alert:
+				output.writeObject("@05" + message);
+				break;
+			case EditProfile_Success:
+				output.writeObject("@06" + message);
+				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
+						+ "\n" + message);
+				break;
 			default:
 				return;
 			}
@@ -139,13 +147,13 @@ public class Waiter extends Thread {
 		}
 	}
 
-	private void SendToOthers(String message) {
+	private void SendToOthers(String message,boolean isTrim) {
 		// TODO Auto-generated method stub
 		Waiter waiter;
 		for (int i = 0; i < al.size(); ++i) {
 			waiter = al.get(i);
 			if (!this.equals(waiter)) {
-				waiter.sendMessage(message, nickName);
+				waiter.sendMessage(message, nickName,isTrim);
 			}
 		}
 	}
@@ -179,7 +187,7 @@ public class Waiter extends Thread {
 		flag = true;
 		String message = nickName + " connected";
 		sendMessage(message);
-		SendToOthers(message);
+		SendToOthers(message,false);
 		do {
 			try {
 				DateFormat dateFormat = new SimpleDateFormat(
@@ -193,6 +201,7 @@ public class Waiter extends Thread {
 					showMessage(nickName + " - "
 							+ dateFormat.format(cal.getTime()) + "\n"
 							+ m.message);
+					SendToOthers(message,true);
 					break;
 				case 1:
 					if (register(m.message))
@@ -208,10 +217,13 @@ public class Waiter extends Thread {
 								+ "Login");
 					break;
 				case 3:
+					if(editProfile(m.message))
+						showMessage(nickName + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
+								+ "Changed password");
 					break;
 				}
 				// System.out.println(message);
-				SendToOthers(message);
 			} catch (ClassNotFoundException cnfe) {
 				flag = false;
 				showMessage("I dont know what user send");
@@ -222,6 +234,45 @@ public class Waiter extends Thread {
 				flag = false;
 			}
 		} while (flag);
+	}
+
+	private boolean editProfile(String message) {
+		// TODO Auto-generated method stub
+		boolean set = false;
+		User user = GetUserInfo(message);
+		Element e = doc.createElement("User");
+		e.setAttribute("ID", user.name);
+		e.setAttribute("PWD", user.password);
+		e.setAttribute("Type", "1");
+
+		NodeList root = doc.getChildNodes();
+		// System.out.println(root);
+		Node nodes = root.item(0);
+		NodeList info = nodes.getChildNodes();
+
+		// test if ID exist
+		NodeList allUser = doc.getElementsByTagName("User");
+		for (int i = 0; i < allUser.getLength(); ++i) {
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)
+					&& allUser.item(i).getAttributes().getNamedItem("PWD")
+							.getNodeValue().equals(user.password)) {
+				allUser.item(i).getAttributes().getNamedItem("PWD").setNodeValue(user.new_password);
+				boolean result = doc2XmlFile(doc, "./Server_Account.xml");
+				if (result) {
+					sendMessage("New password set!",
+							ServerCommand.EditProfile_Success);
+					return true;
+				} else {
+					sendMessage("Failed: Server data file is wrong!",
+							ServerCommand.EditProfile_Alert);
+					return false;
+				}
+			}
+		}
+		sendMessage("Failed: Name and password does not match!",
+				ServerCommand.EditProfile_Alert);
+		return false;
 	}
 
 	private boolean login(String message) {
@@ -313,7 +364,10 @@ public class Waiter extends Thread {
 	private User GetUserInfo(String message) {
 		// TODO Auto-generated method stub
 		String[] info = message.split("\n");
-		return new User(info[0], info[1], 0);
+		if(info.length==2)
+			return new User(info[0], info[1], 0);
+		else
+			return new User(info[0], info[1], 0 , info[2]);
 	}
 
 	private Message handleMessage(String message) {
