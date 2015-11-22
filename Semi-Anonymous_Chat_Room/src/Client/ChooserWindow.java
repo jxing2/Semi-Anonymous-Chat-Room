@@ -11,6 +11,7 @@ public class ChooserWindow extends JFrame{
 	private JButton send;//pop out chooser window when clicked
 	private JButton cancle;
 	private Container pane;
+	private String filePath;
 	public ChooserWindow(){
 		pane = getContentPane();
 		pane.setLayout(null);
@@ -34,7 +35,7 @@ public class ChooserWindow extends JFrame{
 		Client.centreWindow(this);
 		this.setVisible(true);
 		
-		choose.addActionListener(
+		choose.addActionListener(//show file name in text field and get the absolute path
 				new ActionListener(){
 					public void actionPerformed(final ActionEvent e){
 						JFileChooser fileChooser = new JFileChooser();
@@ -42,12 +43,9 @@ public class ChooserWindow extends JFrame{
 						fileChooser.setVisible(true);
 						int returnVal = fileChooser.showOpenDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					       System.out.println("You chose to open this file: " +
-					            fileChooser.getSelectedFile().getName());
+					    	filename.setText(fileChooser.getSelectedFile().getName());
+					    	filePath = fileChooser.getSelectedFile().getAbsolutePath();
 					    }
-					 
-						filename.setText(fileChooser.getSelectedFile().getName());
-						//fileChooser.getSelectedFile().getName();
 					}
 			
 		});
@@ -69,7 +67,7 @@ public class ChooserWindow extends JFrame{
 		
 	}
 	public void send(){
-		
+		System.out.println(filePath);
 	}
 }
 
