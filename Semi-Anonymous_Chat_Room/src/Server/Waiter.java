@@ -1,6 +1,7 @@
 package Server;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,7 +26,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-
 public class Waiter extends Thread {
 	public ObjectOutputStream output;
 	public ObjectInputStream input;
@@ -36,21 +36,24 @@ public class Waiter extends Thread {
 	public String nickName;
 	public String realName;
 	private boolean isLogined = false;
-
+	
 	private enum Type {
 		Teacher, Student
 	}
-
 	private Type type;
 	public boolean flag;
 	private Document doc;
+	 FileWriter chatLog;
+	 FileWriter opLog;
 
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
-			Document doc) {
+			Document doc, FileWriter chatLog, FileWriter opLog) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
 		this.doc = doc;
+		this.chatLog = chatLog;
+		this.opLog = opLog;
 	}
 
 	private void waitForConnection(ServerSocket server) {
@@ -201,26 +204,53 @@ public class Waiter extends Thread {
 					showMessage(nickName + " - "
 							+ dateFormat.format(cal.getTime()) + "\n"
 							+ m.message);
+					chatLog(realName+ " - "
+							+ dateFormat.format(cal.getTime()) + "\r\n"
+							+ m.message);
 					SendToOthers(message,true);
 					break;
 				case 1:
 					if (register(m.message))
-						showMessage(nickName + " - "
+					{
+						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Register");
+								+ "Registered");
+					}
+					else
+					{
+						opLog(GetUserInfo(m.message).name + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
+								+ "Register failed");
+					}
 					break;
 				case 2:
 					if(!isLogined)
 					if (login(m.message))
-						showMessage(nickName + " - "
+					{
+						opLog(realName+ " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Login");
+								+ "Logined");
+					}
+					else
+					{
+						opLog(realName+ " - "
+								+ dateFormat.format(cal.getTime()) + "--"
+								+ "Login failled");
+					}
 					break;
 				case 3:
 					if(editProfile(m.message))
-						showMessage(nickName + " - "
+					{
+						opLog(GetUserInfo(m.message).name+ " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Changed password");
+					}
+					else
+					{
+						opLog(GetUserInfo(m.message).name+ " - "
+								+ dateFormat.format(cal.getTime()) + "--"
+								+ "Change password failed");
+					}
 					break;
 				}
 				// System.out.println(message);
@@ -238,18 +268,7 @@ public class Waiter extends Thread {
 
 	private boolean editProfile(String message) {
 		// TODO Auto-generated method stub
-		boolean set = false;
 		User user = GetUserInfo(message);
-		Element e = doc.createElement("User");
-		e.setAttribute("ID", user.name);
-		e.setAttribute("PWD", user.password);
-		e.setAttribute("Type", "1");
-
-		NodeList root = doc.getChildNodes();
-		// System.out.println(root);
-		Node nodes = root.item(0);
-		NodeList info = nodes.getChildNodes();
-
 		// test if ID exist
 		NodeList allUser = doc.getElementsByTagName("User");
 		for (int i = 0; i < allUser.getLength(); ++i) {
@@ -381,5 +400,25 @@ public class Waiter extends Thread {
 		} else
 			return new Message("", -1);// error
 	}
-
+	
+	private void chatLog(String chat)
+	{
+		try {
+			chatLog.write(chat+"\r\n");
+			chatLog.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void opLog(String op)
+	{
+		try {
+			opLog.write(op+"\r\n");
+			opLog.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

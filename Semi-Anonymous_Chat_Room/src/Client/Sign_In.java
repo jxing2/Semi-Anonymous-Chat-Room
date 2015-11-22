@@ -88,7 +88,6 @@ public class Sign_In extends JFrame{
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				name_txt.setText("");
 				pwd_txt.setText("");
 			}
 		});	

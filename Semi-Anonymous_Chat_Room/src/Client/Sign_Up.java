@@ -105,7 +105,6 @@ public class Sign_Up extends JFrame{
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				name_txt.setText("");
 				pwd_txt.setText("");
 				again_pwd_txt.setText("");
 			}
