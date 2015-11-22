@@ -6,7 +6,6 @@ import javax.swing.*;
 
 public class ChooserWindow extends JFrame{
 	//pop out a window to choose a file
-	private JFrame chooserWindow;
 	private JTextField filename;//display the file you choose
 	private JButton choose;
 	private JButton send;//pop out chooser window when clicked
@@ -39,15 +38,16 @@ public class ChooserWindow extends JFrame{
 				new ActionListener(){
 					public void actionPerformed(final ActionEvent e){
 						JFileChooser fileChooser = new JFileChooser();
-						//pane.add(fileChooser);
-						chooserWindow = new JFrame(); 
-						chooserWindow.getContentPane().add(fileChooser);
-						chooserWindow.pack();
-						Client.centreWindow(chooserWindow);
-						chooserWindow.setVisible(true);
 						fileChooser.setDialogTitle("Choose a file");
 						fileChooser.setVisible(true);
-						System.out.println("works");
+						int returnVal = fileChooser.showOpenDialog(null);
+					    if(returnVal == JFileChooser.APPROVE_OPTION) {
+					       System.out.println("You chose to open this file: " +
+					            fileChooser.getSelectedFile().getName());
+					    }
+					 
+						filename.setText(fileChooser.getSelectedFile().getName());
+						//fileChooser.getSelectedFile().getName();
 					}
 			
 		});
@@ -59,6 +59,16 @@ public class ChooserWindow extends JFrame{
 					}
 				});
 		
+		send.addActionListener(
+				new ActionListener(){
+					public void actionPerformed(ActionEvent e){
+						send();
+					}
+				});
+		
+		
+	}
+	public void send(){
 		
 	}
 }
