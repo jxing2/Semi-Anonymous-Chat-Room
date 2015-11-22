@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Account>
+	<UserList>
+		<User ID="xing" PWD="123" Type="1"/>
+		<User ID="fan" PWD="123456" Type="1"/>
+		<User ID="li" PWD="123456" Type="1"/>
+		<User ID="kruger" PWD="123456" Type="0"/>
+	<User ID="yao" PWD="1234" Type="1"/></UserList>
+</Account>
