@@ -35,6 +35,7 @@ public class Waiter extends Thread {
 	private ArrayList<Waiter> al;
 	public String nickName;
 	public String realName;
+	private boolean isLogined = false;
 
 	private enum Type {
 		Teacher, Student
@@ -80,7 +81,8 @@ public class Waiter extends Thread {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			output.writeObject("@00" + nickName + " - "
-					+ dateFormat.format(cal.getTime()) + "\n" + message.substring(3, message.length()));
+					+ dateFormat.format(cal.getTime()) + "\n"
+					+ message.substring(3, message.length()));
 			output.flush();
 		} catch (IOException ie) {
 			// j_public.append("Something WRONG");
@@ -106,8 +108,26 @@ public class Waiter extends Thread {
 				break;
 			case Register_Alert:
 				output.writeObject("@01" + message);
+				// showMessage(nickName + " - " +
+				// dateFormat.format(cal.getTime())
+				// + "\n" + message);
+				break;
+			case Register_Success:
+				output.writeObject("@02" + message);
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
+				break;
+			case Login_Alert:
+				output.writeObject("@03" + message);
+				// showMessage(nickName + " - " +
+				// dateFormat.format(cal.getTime())
+				// + "\n" + message);
+				break;
+			case Login_Success:
+				output.writeObject("@04" + message);
+				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
+						+ "\n" + message);
+				isLogined = true;
 				break;
 			default:
 				return;
@@ -175,13 +195,17 @@ public class Waiter extends Thread {
 							+ m.message);
 					break;
 				case 1:
-					System.out.println("hello");
 					if (register(m.message))
 						showMessage(nickName + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Register");
 					break;
 				case 2:
+					if(!isLogined)
+					if (login(m.message))
+						showMessage(nickName + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
+								+ "Login");
 					break;
 				case 3:
 					break;
@@ -199,6 +223,31 @@ public class Waiter extends Thread {
 			}
 		} while (flag);
 	}
+
+	private boolean login(String message) {
+		// TODO Auto-generated method stub
+		User user = GetUserInfo(message);
+
+		NodeList allUser = doc.getElementsByTagName("User");
+
+		for (int i = 0; i < allUser.getLength(); ++i) {
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)
+					&& allUser.item(i).getAttributes().getNamedItem("PWD")
+							.getNodeValue().equals(user.password)) {
+				realName = user.name;
+				type = allUser.item(i).getAttributes().getNamedItem("Type")
+						.getNodeValue().equals("1") ? Type.Student
+						: Type.Teacher;
+				sendMessage("Success!", ServerCommand.Login_Success);
+				return true;
+			}
+		}
+		sendMessage("Failed: Name and password does not match!",
+				ServerCommand.Login_Alert);
+		return false;
+	}
+
 	private boolean register(String message) {
 		// TODO Auto-generated method stub
 		User user = GetUserInfo(message);
@@ -215,8 +264,8 @@ public class Waiter extends Thread {
 		// test if ID exist
 		NodeList allUser = doc.getElementsByTagName("User");
 		for (int i = 0; i < allUser.getLength(); ++i) {
-			if (allUser.item(i).getAttributes().getNamedItem("ID").getNodeValue()
-					.equals(user.name)) {
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)) {
 				sendMessage("Failed: Name already exist!",
 						ServerCommand.Register_Alert);
 				return false;
@@ -231,7 +280,7 @@ public class Waiter extends Thread {
 		}
 		boolean result = doc2XmlFile(doc, "./Server_Account.xml");
 		if (result) {
-			sendMessage("Success!", ServerCommand.Register_Alert);
+			sendMessage("Success!", ServerCommand.Register_Success);
 			return true;
 		} else {
 			sendMessage("Failed: Server data file is wrong!",

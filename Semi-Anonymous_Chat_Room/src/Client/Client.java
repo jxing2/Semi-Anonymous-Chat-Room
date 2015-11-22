@@ -37,7 +37,9 @@ public class Client extends JFrame {
 	private Document doc;
 	JMenuBar bar;
 	Sign_Up sign_up;
+	Sign_In login;
 	JScrollPane jsp;
+	private boolean isLogined = false;
 	
 	public Client() {
 		super("Client");
@@ -66,7 +68,7 @@ public class Client extends JFrame {
 		});
 
 		bar = new JMenuBar();
-		JMenuItem signIn = new JMenuItem("Sign in");
+		JMenuItem signIn = new JMenuItem("Login");
 		JMenuItem signUp = new JMenuItem("Sign up");
 		JMenuItem changePWD = new JMenuItem("Change password");
 		JMenuItem exit = new JMenuItem("Exit");
@@ -85,7 +87,10 @@ public class Client extends JFrame {
 		file.add(downloadFile);
 		signIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
-				signIn();
+				if(!isLogined)
+					signIn();
+				else
+					JOptionPane.showMessageDialog(null,"You have already signed in.");
 			}
 		});
 		signUp.addActionListener(new ActionListener() {
@@ -136,7 +141,7 @@ public class Client extends JFrame {
 
 	private void signIn() {
 		// TODO Auto-generated method stub
-
+		login = new Sign_In(this);
 	}
 
 	private void signUp() {
@@ -227,7 +232,7 @@ public class Client extends JFrame {
 	private void whileChatting() throws IOException {
 		// TODO Auto-generated method stub
 		String message = "";
-		ableToType(true);
+		//ableToType(true);
 		do {
 			try {
 				j_public.setCaretPosition(j_public.getDocument().getLength());
@@ -240,7 +245,25 @@ public class Client extends JFrame {
 					break;
 				case 1:
 					JOptionPane.showMessageDialog(sign_up, m.message);
-					sign_up.clear();
+					if(sign_up!=null)
+						sign_up.clear();
+					break;
+				case 2:
+					JOptionPane.showMessageDialog(sign_up, m.message);
+					if(sign_up!=null)
+						sign_up.close();
+					break;
+				case 3:
+					JOptionPane.showMessageDialog(login, m.message);
+					if(login!=null)
+						login.clear();
+					break;
+				case 4:
+					//JOptionPane.showMessageDialog(login, m.message);
+					if(login!=null)
+						login.close();
+					ableToType(true);
+					isLogined = true;
 					break;
 				default:
 					return;
