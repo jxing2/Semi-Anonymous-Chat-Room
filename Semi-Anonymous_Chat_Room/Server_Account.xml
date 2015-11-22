@@ -3,8 +3,7 @@
 		<User ID="xing" PWD="123456" Type="1"/>
 		<User ID="fan" PWD="123456" Type="1"/>
 		<User ID="li" PWD="123456" Type="1"/>
-		<User ID="kruger" PWD="123456" Type="0"/>
-	</UserList>
+		<User ID="kruger" PWD="123456" Type="0"/></UserList>
 	<Configuration>
 		<Socket IP="127.0.0.1" Port="6789"/>
 	</Configuration>

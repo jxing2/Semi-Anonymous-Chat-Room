@@ -81,8 +81,8 @@ public class Server<ref> extends JFrame {
 				{
 					if(socketInfo.item(i).getNodeName().equals("Socket"))
 					{
-						IP = socketInfo.item(i).getAttributes().item(0).getNodeValue().toString();
-						port = Integer.parseInt(socketInfo.item(i).getAttributes().item(1).getNodeValue().toString());
+						IP = socketInfo.item(i).getAttributes().getNamedItem("IP").getNodeValue().toString();
+						port = Integer.parseInt(socketInfo.item(i).getAttributes().getNamedItem("Port").getNodeValue().toString());
 						break;
 					}
 				}

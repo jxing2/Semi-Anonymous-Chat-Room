@@ -11,9 +11,9 @@ public class Sign_Up extends JFrame{
 	private JLabel name ;
 	private JTextField name_txt;
 	private JLabel pwd ;
-	private JTextField pwd_txt;
+	private JPasswordField pwd_txt;
 	private JLabel again_pwd ;
-	private JTextField again_pwd_txt;
+	private JPasswordField again_pwd_txt;
 	private JButton confirm;
 	private Container pane;
 	private int upperMargin=20;
@@ -32,11 +32,11 @@ public class Sign_Up extends JFrame{
 		name_txt.setBounds(leftMargin, upperMargin+=interval, width, 30);
 		pwd = new JLabel("Password :");
 		pwd.setBounds(leftMargin,upperMargin+=interval,  width, 30);
-		pwd_txt = new JTextField();
+		pwd_txt = new JPasswordField();
 		pwd_txt.setBounds(leftMargin,upperMargin+=interval,  width, 30);
 		again_pwd = new JLabel("Confirm your password :");
 		again_pwd.setBounds( leftMargin,upperMargin+=interval, width, 30);
-		again_pwd_txt = new JTextField();
+		again_pwd_txt = new JPasswordField();
 		again_pwd_txt.setBounds(leftMargin,upperMargin+=interval,  width, 30);
 		confirm = new JButton("Sign Up!");
 		confirm.setBounds( leftMargin,upperMargin+=interval+42, width, 30);
@@ -65,26 +65,37 @@ public class Sign_Up extends JFrame{
 	}
 	protected void confirm() {
 		// TODO Auto-generated method stub
-		if(name_txt.getText().equals(""))
+		if(name_txt.getText().trim().equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Name cannot be empty!");
 			return;
 		}
-		if(pwd_txt.getText().equals(""))
+		if(String.valueOf(pwd_txt.getPassword()).equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Password cannot be empty!");
 			return;
 		}
-		if(again_pwd_txt.getText().equals(""))
+		if(String.valueOf(again_pwd_txt.getPassword()).equals(""))
 		{
 			JOptionPane.showMessageDialog(this, "Please confirm your Password!");
 			return;
 		}
-		if(!pwd_txt.getText().equals(again_pwd_txt.getText()))
+		if(!String.valueOf(pwd_txt.getPassword()).equals(String.valueOf(again_pwd_txt.getPassword())))
 		{
 			JOptionPane.showMessageDialog(this, "Password does not match!");
 			return;
 		}
-		parent.sendMessage(name_txt.getText()+"\n"+pwd_txt.getText(),CommandType.Register);
+		parent.sendMessage(name_txt.getText().trim()+"\n"+String.valueOf(pwd_txt.getPassword()),CommandType.Register);
+	}
+	public void clear() {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				name_txt.setText("");
+				pwd_txt.setText("");
+				again_pwd_txt.setText("");
+			}
+		});
+		
 	}
 }
