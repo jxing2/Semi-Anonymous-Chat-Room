@@ -68,6 +68,7 @@ public class Client extends JFrame {
 		bar = new JMenuBar();
 		JMenuItem signIn = new JMenuItem("Sign in");
 		JMenuItem signUp = new JMenuItem("Sign up");
+		JMenuItem changePWD = new JMenuItem("Change password");
 		JMenuItem exit = new JMenuItem("Exit");
 		JMenuItem sendFile = new JMenuItem("Send file");
 		JMenuItem downloadFile = new JMenuItem("Download file");
@@ -78,6 +79,7 @@ public class Client extends JFrame {
 		bar.add(file);
 		account.add(signIn);
 		account.add(signUp);
+		account.add(changePWD);
 		account.add(exit);
 		file.add(sendFile);
 		file.add(downloadFile);
@@ -89,6 +91,11 @@ public class Client extends JFrame {
 		signUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				signUp();
+			}
+		});
+		changePWD.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				changePWD();
 			}
 		});
 		exit.addActionListener(new ActionListener() {
@@ -109,6 +116,11 @@ public class Client extends JFrame {
 		setJMenuBar(bar);
 		setSize(580, 380);
 		centreWindow(this);
+	}
+
+	protected void changePWD() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void sendFile() {
