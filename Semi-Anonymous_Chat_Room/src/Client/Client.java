@@ -284,6 +284,7 @@ public class Client extends JFrame{
 		}
 		catch(IOException ie)
 		{
+			
 		}
 	}
 	public static void centreWindow(Window frame) {

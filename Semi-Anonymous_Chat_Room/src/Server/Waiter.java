@@ -146,7 +146,9 @@ public class Waiter extends Thread {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				message = String.valueOf(input.readObject());
+				System.out.println(message);
 				Message m = handleMessage(message);
+				System.out.println(m.message+"ddd");
 				System.out.println("hello4"+m.type);
 				switch(m.type)
 				{
@@ -222,7 +224,13 @@ public class Waiter extends Thread {
 
 	private User GetUserInfo(String message) {
 		// TODO Auto-generated method stub
+		System.out.println(message+"hello");
 		String[] info = message.split("\n");
+		System.out.println(info.length);
+		for(int i = 0 ; i < info.length ; i++)
+		{
+			System.out.println(info[i]);
+		}
 		return new User(info[0],info[1],0);
 	}
 	private Message handleMessage(String message) {
@@ -233,7 +241,7 @@ public class Waiter extends Thread {
 			type = Integer.parseInt(message.substring(1,2));
 			if(type<0)
 				return new Message("",-1);// error
-			return new Message(message.substring(3,message.length()-1),type);// right
+			return new Message(message.substring(3,message.length()),type);// right
 		}
 		else
 			return new Message("",-1);// error
