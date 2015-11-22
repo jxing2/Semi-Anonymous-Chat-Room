@@ -233,7 +233,7 @@ public class Waiter extends Thread {
 			type = Integer.parseInt(message.substring(1,2));
 			if(type<0)
 				return new Message("",-1);// error
-			return new Message(message.substring(2,message.length()-1),type);// right
+			return new Message(message.substring(3,message.length()-1),type);// right
 		}
 		else
 			return new Message("",-1);// error
