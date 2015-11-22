@@ -29,7 +29,7 @@ public class Server<ref> extends JFrame {
 	private int port;
 	KickDeadUser kick ;
 	private Document doc;
-
+	private NodeList userNode;
 	public Server() {
 		super("Server");
 		al = new ArrayList<Waiter>();
@@ -63,6 +63,8 @@ public class Server<ref> extends JFrame {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Missing XML file!");
+			System.exit(-1);
 		}
 		NodeList root = doc.getChildNodes();
 		// System.out.println(root);
@@ -86,17 +88,10 @@ public class Server<ref> extends JFrame {
 				}
 			}
 			// read user info.
-//			if(info.item(j).getNodeName().equals("UserList"))
-//			{
-//				NodeList userInfo = info.item(j).getChildNodes();
-//				for(int i = 0 ; i < userInfo.getLength();++i)
-//				{
-//					if(userInfo.item(i).getNodeName().equals("User"))
-//					{
-//						//System.out.println("Found Socket");
-//					}
-//				}
-//			}
+			if(info.item(j).getNodeName().equals("UserList"))
+			{
+				userNode = info.item(j).getChildNodes();
+			}
 		}
 	}
 
@@ -108,7 +103,7 @@ public class Server<ref> extends JFrame {
 			kick.start();
 			while (true) {
 				try {
-					waiter = new Waiter(j_public, al, count);
+					waiter = new Waiter(j_public, al, count, doc);
 					waiter.serve(server);
 					waiter.start();
 					al.add(waiter);
@@ -136,7 +131,6 @@ public class Server<ref> extends JFrame {
 		server.startRunning();
 	}
 	
-	
 	private class KickDeadUser extends Thread {
 		public void run() {  
 			while(true)
@@ -148,7 +142,6 @@ public class Server<ref> extends JFrame {
 						System.out.println(al.get(i).nickName+ " is removed");
 						al.remove(i);
 						i--;
-						
 					}
 				}
 				try {

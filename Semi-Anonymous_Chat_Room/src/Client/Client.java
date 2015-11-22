@@ -254,8 +254,10 @@ public class Client extends JFrame{
 				break;
 			case Register:
 				tmp = "@1 " + message;
+				break;
 			case Login:
 				tmp = "@2 " + message;
+				break;
 			case EditProfile:
 				tmp = "@3 " + message;
 				break;
