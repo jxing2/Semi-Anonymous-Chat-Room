@@ -26,6 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+
 public class Waiter extends Thread {
 	public ObjectOutputStream output;
 	public ObjectInputStream input;
@@ -36,15 +37,17 @@ public class Waiter extends Thread {
 	public String nickName;
 	public String realName;
 	private boolean isLogined = false;
-	
+
 	private enum Type {
 		Teacher, Student
 	}
+
 	private Type type;
 	public boolean flag;
 	private Document doc;
-	 FileWriter chatLog;
-	 FileWriter opLog;
+	FileWriter chatLog;
+	FileWriter opLog;
+	IsLogined testLogined;
 
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog) {
@@ -83,9 +86,13 @@ public class Waiter extends Thread {
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
-			output.writeObject("@00" + nickName + " - "
-					+ dateFormat.format(cal.getTime()) + "\n"
-					+ (isTrim?message.substring(3, message.length()):message));
+			output.writeObject("@00"
+					+ nickName
+					+ " - "
+					+ dateFormat.format(cal.getTime())
+					+ "\n"
+					+ (isTrim ? message.substring(3, message.length())
+							: message));
 			output.flush();
 		} catch (IOException ie) {
 			// j_public.append("Something WRONG");
@@ -150,13 +157,13 @@ public class Waiter extends Thread {
 		}
 	}
 
-	private void SendToOthers(String message,boolean isTrim) {
+	private void SendToOthers(String message, boolean isTrim) {
 		// TODO Auto-generated method stub
 		Waiter waiter;
 		for (int i = 0; i < al.size(); ++i) {
 			waiter = al.get(i);
 			if (!this.equals(waiter)) {
-				waiter.sendMessage(message, nickName,isTrim);
+				waiter.sendMessage(message, nickName, isTrim);
 			}
 		}
 	}
@@ -190,7 +197,7 @@ public class Waiter extends Thread {
 		flag = true;
 		String message = nickName + " connected";
 		sendMessage(message);
-		SendToOthers(message,false);
+		SendToOthers(message, false);
 		do {
 			try {
 				DateFormat dateFormat = new SimpleDateFormat(
@@ -204,50 +211,40 @@ public class Waiter extends Thread {
 					showMessage(nickName + " - "
 							+ dateFormat.format(cal.getTime()) + "\n"
 							+ m.message);
-					chatLog(realName+ " - "
-							+ dateFormat.format(cal.getTime()) + "\r\n"
-							+ m.message);
-					SendToOthers(message,true);
+					chatLog(realName + " - " + dateFormat.format(cal.getTime())
+							+ "\r\n" + m.message);
+					SendToOthers(message, true);
 					break;
 				case 1:
-					if (register(m.message))
-					{
+					if (register(m.message)) {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Registered");
-					}
-					else
-					{
+					} else {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Register failed");
 					}
 					break;
 				case 2:
-					if(!isLogined)
-					if (login(m.message))
-					{
-						opLog(realName+ " - "
-								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Logined");
-					}
-					else
-					{
-						opLog(realName+ " - "
-								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Login failled");
-					}
+					if (!isLogined)
+						if (login(m.message)) {
+							opLog(realName + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
+									+ "Logined");
+						} else {
+							opLog(realName + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
+									+ "Login failled");
+						}
 					break;
 				case 3:
-					if(editProfile(m.message))
-					{
-						opLog(GetUserInfo(m.message).name+ " - "
+					if (editProfile(m.message)) {
+						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Changed password");
-					}
-					else
-					{
-						opLog(GetUserInfo(m.message).name+ " - "
+					} else {
+						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Change password failed");
 					}
@@ -276,7 +273,8 @@ public class Waiter extends Thread {
 					.getNodeValue().equals(user.name)
 					&& allUser.item(i).getAttributes().getNamedItem("PWD")
 							.getNodeValue().equals(user.password)) {
-				allUser.item(i).getAttributes().getNamedItem("PWD").setNodeValue(user.new_password);
+				allUser.item(i).getAttributes().getNamedItem("PWD")
+						.setNodeValue(user.new_password);
 				boolean result = doc2XmlFile(doc, "./Server_Account.xml");
 				if (result) {
 					sendMessage("New password set!",
@@ -297,6 +295,14 @@ public class Waiter extends Thread {
 	private boolean login(String message) {
 		// TODO Auto-generated method stub
 		User user = GetUserInfo(message);
+		
+		testLogined = new IsLogined(al, user.name);
+		if(testLogined.run())
+		{
+			sendMessage("Failed: This account already signed in!",
+					ServerCommand.Login_Alert);
+			return false;
+		}
 
 		NodeList allUser = doc.getElementsByTagName("User");
 
@@ -383,10 +389,10 @@ public class Waiter extends Thread {
 	private User GetUserInfo(String message) {
 		// TODO Auto-generated method stub
 		String[] info = message.split("\n");
-		if(info.length==2)
+		if (info.length == 2)
 			return new User(info[0], info[1], 0);
 		else
-			return new User(info[0], info[1], 0 , info[2]);
+			return new User(info[0], info[1], 0, info[2]);
 	}
 
 	private Message handleMessage(String message) {
@@ -400,21 +406,20 @@ public class Waiter extends Thread {
 		} else
 			return new Message("", -1);// error
 	}
-	
-	private void chatLog(String chat)
-	{
+
+	private void chatLog(String chat) {
 		try {
-			chatLog.write(chat+"\r\n");
+			chatLog.write(chat + "\r\n");
 			chatLog.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	private void opLog(String op)
-	{
+
+	private void opLog(String op) {
 		try {
-			opLog.write(op+"\r\n");
+			opLog.write(op + "\r\n");
 			opLog.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

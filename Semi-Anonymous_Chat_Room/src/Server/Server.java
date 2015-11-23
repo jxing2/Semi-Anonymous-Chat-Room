@@ -175,8 +175,8 @@ public class Server<ref> extends JFrame {
 			while (true) {
 				for (int i = 0; i < al.size(); i++) {
 					if (!al.get(i).isAlive()) {
-						opLog(al.get(i).realName.equals("") ? al.get(i).nickName
-								: al.get(i).realName + " is Logging out. --"
+						opLog(((al.get(i).realName==null) ? al.get(i).nickName
+								: al.get(i).realName) + " is Logging out. --"
 										+ dateFormat.format(cal.getTime()));
 						al.remove(i);
 						i--;
