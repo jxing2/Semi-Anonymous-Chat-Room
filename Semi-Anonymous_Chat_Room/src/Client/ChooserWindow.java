@@ -1,24 +1,33 @@
 package Client;
 
+import java.io.*;
+//import java.net.*;
+//import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 public class ChooserWindow extends JFrame{
 	//pop out a window to choose a file
-	private JTextField filename;//display the file you choose
+	private JTextField checkField;//display the file you choose
 	private JButton choose;
 	private JButton send;//pop out chooser window when clicked
 	private JButton cancle;
 	private Container pane;
 	private String filePath;
+	private String filename;
+	private BufferedInputStream fileBufferIn;
+	private BufferedOutputStream fileBufferOut;
+	private FileInputStream fileIn;
+	
 	public ChooserWindow(){
 		pane = getContentPane();
 		pane.setLayout(null);
 		//chooserWindow = new JFrame();
-		filename= new JTextField();
-		filename.setBounds(20,30,200,30);
-		filename.setEditable(false);
+		checkField= new JTextField();
+		checkField.setBounds(20,30,200,30);
+		checkField.setEditable(false);
 		choose = new JButton("Choose");
 		choose.setBounds(240,30,100,30);
 		send = new JButton("Send");
@@ -26,7 +35,7 @@ public class ChooserWindow extends JFrame{
 		cancle = new JButton("Cancle");
 		cancle.setBounds(190,75,100,30);
 		
-		pane.add(filename);
+		pane.add(checkField);
 		pane.add(choose);
 		pane.add(send);
 		pane.add(cancle);
@@ -43,7 +52,8 @@ public class ChooserWindow extends JFrame{
 						fileChooser.setVisible(true);
 						int returnVal = fileChooser.showOpenDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					    	filename.setText(fileChooser.getSelectedFile().getName());
+					    	filename = fileChooser.getSelectedFile().getName();
+					    	checkField.setText(filename);
 					    	filePath = fileChooser.getSelectedFile().getAbsolutePath();
 					    }
 					}
@@ -67,7 +77,25 @@ public class ChooserWindow extends JFrame{
 		
 	}
 	public void send(){
-		System.out.println(filePath);
+		if (checkField.getText().trim().equals("")){
+			return;
+		}
+		try{
+			File file = new File(filename);
+			fileIn = new FileInputStream(file);
+			fileBufferIn = new BufferedInputStream(fileIn);
+			byte[] buff = new byte[2048];
+			int num = fileBufferIn.read(buff);
+			while( num != -1 ){
+				fileBufferOut.write(buff, 0, num);
+				fileBufferOut.flush();
+				num = fileBufferIn.read(buff);
+			}
+		}catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}catch ( IOException e ){
+			e.printStackTrace();
+		}
 	}
 }
 
