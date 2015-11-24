@@ -40,6 +40,7 @@ public class Client extends JFrame {
 	Sign_In login;
 	Change_PWD chang_PWD;
 	JScrollPane jsp;
+	JMenuItem signIn;
 	private boolean isLogined = false;
 
 	public Client() {
@@ -69,7 +70,7 @@ public class Client extends JFrame {
 		});
 
 		bar = new JMenuBar();
-		JMenuItem signIn = new JMenuItem("Login");
+		signIn = new JMenuItem("Login");
 		JMenuItem signUp = new JMenuItem("Sign up");
 		JMenuItem changePWD = new JMenuItem("Change password");
 		JMenuItem exit = new JMenuItem("Exit");
@@ -77,7 +78,14 @@ public class Client extends JFrame {
 		JMenuItem downloadFile = new JMenuItem("Download file");
 		JMenu account = new JMenu("Account");
 		JMenu file = new JMenu("File");
-
+		signIn.setAccelerator(KeyStroke.getKeyStroke('L', Toolkit
+				.getDefaultToolkit().getMenuShortcutKeyMask()));
+		exit.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit
+				.getDefaultToolkit().getMenuShortcutKeyMask()));
+		sendFile.setAccelerator(KeyStroke.getKeyStroke('S', Toolkit
+				.getDefaultToolkit().getMenuShortcutKeyMask()));
+		downloadFile.setAccelerator(KeyStroke.getKeyStroke('D', Toolkit
+				.getDefaultToolkit().getMenuShortcutKeyMask()));
 		bar.add(account);
 		bar.add(file);
 		account.add(signIn);
@@ -265,6 +273,7 @@ public class Client extends JFrame {
 					if (login != null)
 						login.close();
 					ableToType(true);
+					signIn.setEnabled(false);
 					isLogined = true;
 					realName = login.getRealName();
 					break;
