@@ -1,6 +1,7 @@
 package Client;
 
 import java.io.*;
+
 import Server.Waiter.UserType;
 
 import javax.swing.*;
@@ -235,7 +236,14 @@ public class Client extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
+	private void showMessage(final String txt, final UserType type) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				showMessage(txt, Color.black, false, 19 , type);
+			}
+		});
+	}
 	private void showMessage(final String txt) {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
@@ -267,7 +275,7 @@ public class Client extends JFrame {
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0:
-					showMessage(m.message);
+					showMessage(m.message, UserType.Student);
 					break;
 				case 1:
 					JOptionPane.showMessageDialog(sign_up, m.message);
@@ -293,6 +301,7 @@ public class Client extends JFrame {
 					signIn.setEnabled(false);
 					isLogined = true;
 					realName = login.getRealName();
+					type = UserType.Student;
 					break;
 				case 5:
 					JOptionPane.showMessageDialog(chang_PWD, m.message);
@@ -308,10 +317,16 @@ public class Client extends JFrame {
 					showMessage(m.message,Color.red, true, 19, type);
 					break;
 				case 8:
-					JOptionPane.showMessageDialog(sign_up, m.message);
-					if (sign_up != null)
-						sign_up.close();
-					type = Server.Waiter.UserType.Teacher;
+					System.out.println("1");
+					if (login != null)
+						login.close();
+					ableToType(true);
+					signIn.setEnabled(false);
+					isLogined = true;
+					realName = login.getRealName();
+					type = UserType.Teacher;
+					System.out.println("2");
+					break;
 				default:
 					return;
 				}
@@ -373,19 +388,27 @@ public class Client extends JFrame {
 		j_input.setEditable(b);
 	}
 
-	private void setupStreams() throws IOException {
+	private void setupStreams()  {
 		// TODO Auto-generated method stub
+		try{
 		output = new ObjectOutputStream(sock.getOutputStream());
 		output.flush();
 		input = new ObjectInputStream(sock.getInputStream());
+		}
+		catch(Exception e)
+		{
+			JOptionPane.showMessageDialog(this, "Cannot connect to server!");
+			System.exit(0);
+		}
 	}
 
-	private void connect() throws UnknownHostException, ConnectException {
+	private void connect() {
 		// TODO Auto-generated method stub
 		try {
 			sock = new Socket(IP, 6789);
 		} catch (IOException ie) {
-
+			JOptionPane.showMessageDialog(this, "Cannot connect to server!");
+			System.exit(0);
 		}
 	}
 

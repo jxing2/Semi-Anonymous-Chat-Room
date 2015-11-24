@@ -57,7 +57,7 @@ public class Server<ref> extends JFrame {
 		setSize(580, 380);
 		this.setVisible(true);
 		readXML();
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 		cal = Calendar.getInstance();
 		String tmpDir1 = logDir + dateFormat.format(cal.getTime())
 				+ "_Chat.log";

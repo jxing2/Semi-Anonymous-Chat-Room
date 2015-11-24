@@ -80,7 +80,7 @@ public class Waiter extends Thread {
 		waitForConnection(server);
 		setupStreams();
 	}
-	
+
 	// only used to send message to other users.
 	private void SendToOthers(String message, String nickName, String realName,
 			boolean isTrim, UserType type) {
@@ -155,10 +155,7 @@ public class Waiter extends Thread {
 				// + "\n" + message);
 				break;
 			case Register_Success:
-				if (type == UserType.Teacher)
-					output.writeObject("@08" + message);
-				else
-					output.writeObject("@02" + message);
+				output.writeObject("@02" + message);
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
 				break;
@@ -169,7 +166,10 @@ public class Waiter extends Thread {
 				// + "\n" + message);
 				break;
 			case Login_Success:
-				output.writeObject("@04" + message);
+				if (type == UserType.Teacher)
+					output.writeObject("@08" + message);
+				else
+					output.writeObject("@04" + message);
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
 				isLogined = true;
