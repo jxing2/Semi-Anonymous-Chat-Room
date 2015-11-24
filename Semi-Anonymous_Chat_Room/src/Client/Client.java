@@ -1,9 +1,14 @@
 package Client;
 
 import java.io.*;
+import Server.Waiter.UserType;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,7 +31,7 @@ import java.util.Calendar;
 public class Client extends JFrame {
 
 	private JTextField j_input;
-	private JTextArea j_public;
+	private JTextPane j_public;
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket sock;
@@ -35,6 +40,7 @@ public class Client extends JFrame {
 	private int port;
 	private String realName;
 	private Document doc;
+	private UserType type;
 	JMenuBar bar;
 	Sign_Up sign_up;
 	Sign_In login;
@@ -42,7 +48,7 @@ public class Client extends JFrame {
 	JScrollPane jsp;
 	JMenuItem signIn;
 	private boolean isLogined = false;
-
+	Font inputFont = new Font("", Font.LAYOUT_LEFT_TO_RIGHT, 18);
 	public Client() {
 		super("Client");
 		readXML();
@@ -54,11 +60,11 @@ public class Client extends JFrame {
 				j_input.setText("");
 			}
 		});
-
+		j_input.setFont(inputFont);
 		add(j_input, BorderLayout.SOUTH);
 		// ----------------------------------------
 
-		j_public = new JTextArea();
+		j_public = new JTextPane();
 		j_public.setEditable(false);
 		add(jsp = new JScrollPane(j_public), BorderLayout.CENTER);
 		j_public.setAutoscrolls(true);
@@ -129,7 +135,7 @@ public class Client extends JFrame {
 			}
 		});
 		setJMenuBar(bar);
-		setSize(580, 380);
+		setSize(900, 700);
 		centreWindow(this);
 	}
 
@@ -234,11 +240,21 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				j_public.append(txt + "\n");
+				showMessage(txt, Color.black, false, 19 , type);
 			}
 		});
 	}
-
+	private void showMessage(final String txt, final Color color, final boolean bold, final int fontSize, final UserType type) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if(type == UserType.Teacher)
+					setDocs(txt, Color.red, bold, fontSize);
+				else
+					setDocs(txt, color, bold, fontSize);
+			}
+		});
+	}
 	private void whileChatting() throws IOException {
 		// TODO Auto-generated method stub
 		String message = "";
@@ -247,7 +263,7 @@ public class Client extends JFrame {
 			try {
 				j_public.setCaretPosition(j_public.getDocument().getLength());
 				message = String.valueOf(input.readObject());
-				System.out.println(message);
+				//System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0:
@@ -262,6 +278,7 @@ public class Client extends JFrame {
 					JOptionPane.showMessageDialog(sign_up, m.message);
 					if (sign_up != null)
 						sign_up.close();
+					type = Server.Waiter.UserType.Student;
 					break;
 				case 3:
 					JOptionPane.showMessageDialog(login, m.message);
@@ -287,6 +304,14 @@ public class Client extends JFrame {
 					if (chang_PWD != null)
 						chang_PWD.close();
 					break;
+				case 7: // Professor's message
+					showMessage(m.message,Color.red, true, 19, type);
+					break;
+				case 8:
+					JOptionPane.showMessageDialog(sign_up, m.message);
+					if (sign_up != null)
+						sign_up.close();
+					type = Server.Waiter.UserType.Teacher;
 				default:
 					return;
 				}
@@ -336,11 +361,10 @@ public class Client extends JFrame {
 			default:
 				return;// do nothing
 			}
-			System.out.println(tmp);
 			output.writeObject(tmp);
 			output.flush();
 		} catch (IOException ie) {
-			j_public.append("Something WRONG");
+			ie.printStackTrace();
 		}
 	}
 
@@ -371,7 +395,28 @@ public class Client extends JFrame {
 		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
 		frame.setLocation(x, y);
 	}
+	public void insert(String str, AttributeSet attrSet) {
+		javax.swing.text.Document doc = j_public.getDocument();
+		str = "\n" + str;
+		try {
+			doc.insertString(doc.getLength(), str, attrSet);
+		} catch (BadLocationException e) {
+			System.out.println("BadLocationException: " + e);
+		}
+	}
 
+	public void setDocs(String str, Color col, boolean bold, int fontSize) {
+		SimpleAttributeSet attrSet = new SimpleAttributeSet();
+		StyleConstants.setForeground(attrSet, col);
+		// color
+		if (bold == true) {
+			StyleConstants.setBold(attrSet, true);
+		}
+		// font size
+		StyleConstants.setFontSize(attrSet, fontSize);
+		
+		insert(str, attrSet);
+	}
 	public static void main(String[] args) {
 		Client client = new Client();
 		client.startRunning();

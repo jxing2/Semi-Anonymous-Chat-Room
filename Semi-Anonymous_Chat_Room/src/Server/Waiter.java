@@ -38,11 +38,11 @@ public class Waiter extends Thread {
 	public String realName;
 	private boolean isLogined = false;
 
-	private enum Type {
+	public enum UserType {
 		Teacher, Student
 	}
 
-	private Type type;
+	private UserType type;
 	public boolean flag;
 	private Document doc;
 	FileWriter chatLog;
@@ -80,19 +80,31 @@ public class Waiter extends Thread {
 		waitForConnection(server);
 		setupStreams();
 	}
-
-	private void sendMessage(String message, String nickName, boolean isTrim) {
+	
+	// only used to send message to other users.
+	private void SendToOthers(String message, String nickName, String realName,
+			boolean isTrim, UserType type) {
 		// TODO Auto-generated method stub
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
-			output.writeObject("@00"
-					+ nickName
-					+ " - "
-					+ dateFormat.format(cal.getTime())
-					+ "\n"
-					+ (isTrim ? message.substring(3, message.length())
-							: message));
+			if (type == UserType.Teacher) {
+				output.writeObject("@07"
+						+ realName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
+			} else {
+				output.writeObject("@00"
+						+ nickName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
+			}
 			output.flush();
 		} catch (IOException ie) {
 			// j_public.append("Something WRONG");
@@ -104,6 +116,26 @@ public class Waiter extends Thread {
 	private void sendMessage(String message) {
 		// TODO Auto-generated method stub
 		sendMessage(message, ServerCommand.PlainText);
+	}
+
+	private void SendToOthers(String message, boolean isTrim) {
+		// TODO Auto-generated method stub
+		Waiter waiter;
+		for (int i = 0; i < al.size(); ++i) {
+			waiter = al.get(i);
+			if (!this.equals(waiter)) {
+				waiter.SendToOthers(message, nickName, realName, isTrim, type);
+			}
+		}
+	}
+
+	private void showMessage(final String txt) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				j_public.append(txt + "\n");
+			}
+		});
 	}
 
 	private void sendMessage(String message, ServerCommand cmd) {
@@ -123,7 +155,10 @@ public class Waiter extends Thread {
 				// + "\n" + message);
 				break;
 			case Register_Success:
-				output.writeObject("@02" + message);
+				if (type == UserType.Teacher)
+					output.writeObject("@08" + message);
+				else
+					output.writeObject("@02" + message);
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
 				break;
@@ -155,26 +190,6 @@ public class Waiter extends Thread {
 			flag = false;
 			ie.getStackTrace();
 		}
-	}
-
-	private void SendToOthers(String message, boolean isTrim) {
-		// TODO Auto-generated method stub
-		Waiter waiter;
-		for (int i = 0; i < al.size(); ++i) {
-			waiter = al.get(i);
-			if (!this.equals(waiter)) {
-				waiter.sendMessage(message, nickName, isTrim);
-			}
-		}
-	}
-
-	private void showMessage(final String txt) {
-		// TODO Auto-generated method stub
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				j_public.append(txt + "\n");
-			}
-		});
 	}
 
 	public void close() {
@@ -295,10 +310,9 @@ public class Waiter extends Thread {
 	private boolean login(String message) {
 		// TODO Auto-generated method stub
 		User user = GetUserInfo(message);
-		
+
 		testLogined = new IsLogined(al, user.name);
-		if(testLogined.run())
-		{
+		if (testLogined.run()) {
 			sendMessage("Failed: This account already signed in!",
 					ServerCommand.Login_Alert);
 			return false;
@@ -312,9 +326,10 @@ public class Waiter extends Thread {
 					&& allUser.item(i).getAttributes().getNamedItem("PWD")
 							.getNodeValue().equals(user.password)) {
 				realName = user.name;
-				type = allUser.item(i).getAttributes().getNamedItem("Type")
-						.getNodeValue().equals("1") ? Type.Student
-						: Type.Teacher;
+				type = (allUser.item(i).getAttributes().getNamedItem("Type")
+						.getNodeValue().equals("1")) ? UserType.Student
+						: UserType.Teacher;
+				System.out.println(type);
 				sendMessage("Success!", ServerCommand.Login_Success);
 				return true;
 			}
