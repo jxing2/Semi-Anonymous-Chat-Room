@@ -49,7 +49,8 @@ public class Client extends JFrame {
 	JScrollPane jsp;
 	JMenuItem signIn;
 	private boolean isLogined = false;
-	Font inputFont = new Font("", Font.LAYOUT_LEFT_TO_RIGHT, 18);
+	Font inputFont ;
+	private int fontSize = 19;
 	public Client() {
 		super("Client");
 		readXML();
@@ -61,6 +62,7 @@ public class Client extends JFrame {
 				j_input.setText("");
 			}
 		});
+		inputFont = new Font("", Font.LAYOUT_LEFT_TO_RIGHT, fontSize);
 		j_input.setFont(inputFont);
 		add(j_input, BorderLayout.SOUTH);
 		// ----------------------------------------
@@ -240,7 +242,7 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				showMessage(txt, Color.black, false, 19 , type);
+				showMessage(txt, Color.black, false, fontSize , type);
 			}
 		});
 	}
@@ -248,7 +250,7 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				showMessage(txt, Color.black, false, 19 , type);
+				showMessage(txt, Color.black, false, fontSize , type);
 			}
 		});
 	}

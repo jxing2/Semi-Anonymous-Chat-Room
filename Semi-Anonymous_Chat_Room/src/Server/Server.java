@@ -38,8 +38,8 @@ public class Server<ref> extends JFrame {
 	File opLogFile;
 	FileWriter opLog;
 	DateFormat dateFormat;
+	DateFormat logdateFormat;
 	Calendar cal;
-
 	public Server() {
 		super("Server");
 		al = new ArrayList<Waiter>();
@@ -57,7 +57,8 @@ public class Server<ref> extends JFrame {
 		setSize(580, 380);
 		this.setVisible(true);
 		readXML();
-		dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		logdateFormat =  new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 		cal = Calendar.getInstance();
 		String tmpDir1 = logDir + dateFormat.format(cal.getTime())
 				+ "_Chat.log";
@@ -75,6 +76,7 @@ public class Server<ref> extends JFrame {
 			opLog = new FileWriter(opLogFile, true);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
+			showMessage("log file cannot read or write!");
 			e1.printStackTrace();
 		}
 	}
@@ -177,7 +179,7 @@ public class Server<ref> extends JFrame {
 					if (!al.get(i).isAlive()) {
 						opLog(((al.get(i).realName==null) ? al.get(i).nickName
 								: al.get(i).realName) + " is Logging out. --"
-										+ dateFormat.format(cal.getTime()));
+										+ logdateFormat.format(cal.getTime()));
 						al.remove(i);
 						i--;
 					}
