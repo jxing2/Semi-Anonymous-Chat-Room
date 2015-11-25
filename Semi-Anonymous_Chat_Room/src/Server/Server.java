@@ -18,6 +18,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Server<ref> extends JFrame {
 
@@ -36,10 +38,12 @@ public class Server<ref> extends JFrame {
 	File logFile;
 	FileWriter log;
 	File opLogFile;
+	File SharedDirectory;
 	FileWriter opLog;
 	DateFormat dateFormat;
 	DateFormat logdateFormat;
 	Calendar cal;
+	public static Lock opLogLock = new ReentrantLock();
 	public Server() {
 		super("Server");
 		al = new ArrayList<Waiter>();
@@ -58,7 +62,7 @@ public class Server<ref> extends JFrame {
 		this.setVisible(true);
 		readXML();
 		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		logdateFormat =  new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+		logdateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 		cal = Calendar.getInstance();
 		String tmpDir1 = logDir + dateFormat.format(cal.getTime())
 				+ "_Chat.log";
@@ -68,9 +72,17 @@ public class Server<ref> extends JFrame {
 		System.out.println(tmpDir2);
 		logFile = new File(tmpDir1);
 		opLogFile = new File(tmpDir2);
+		SharedDirectory = new File(shareFileDir);
 		if (!logFile.getParentFile().exists()) {
 			// If directory does not exist --> create it.
+			logFile.mkdir();
 		}
+
+		if (!SharedDirectory.exists() && !SharedDirectory.isDirectory()) {
+			System.out.println("//²»´æÔÚ");
+			SharedDirectory.mkdirs();
+		}
+
 		try {
 			log = new FileWriter(logFile, true);
 			opLog = new FileWriter(opLogFile, true);
@@ -102,20 +114,6 @@ public class Server<ref> extends JFrame {
 			JOptionPane.showMessageDialog(this, "Missing XML files!");
 			System.exit(-1);
 		}
-		// NodeList root = doc.getChildNodes();
-		// // System.out.println(root);
-		// Node nodes = root.item(0);
-		// NodeList info = nodes.getChildNodes();
-		//
-		// for(int j = 0 ; j < info.getLength(); ++j)
-		// {
-		// // read user info.
-		// if(info.item(j).getNodeName().equals("UserList"))
-		// {
-		// userNode = info.item(j).getChildNodes();
-		// }
-		// }
-
 		NodeList socketList = configDoc.getElementsByTagName("Socket");
 		for (int i = 0; i < socketList.getLength(); ++i) {
 			port = Integer.parseInt(socketList.item(i).getAttributes()
@@ -177,9 +175,10 @@ public class Server<ref> extends JFrame {
 			while (true) {
 				for (int i = 0; i < al.size(); i++) {
 					if (!al.get(i).isAlive()) {
-						opLog(((al.get(i).realName==null) ? al.get(i).nickName
-								: al.get(i).realName) + " is Logging out. --"
-										+ logdateFormat.format(cal.getTime()));
+						opLog(((al.get(i).realName == null) ? al.get(i).nickName
+								: al.get(i).realName)
+								+ " is Logging out. --"
+								+ logdateFormat.format(cal.getTime()));
 						al.remove(i);
 						i--;
 					}
@@ -193,14 +192,18 @@ public class Server<ref> extends JFrame {
 			}
 		}
 	}
-
+	
 	private void opLog(String op) {
+		opLogLock.lock();
 		try {
 			opLog.write(op + "\r\n");
 			opLog.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			opLogLock.unlock();
 		}
 	}
 }

@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -48,6 +50,8 @@ public class Waiter extends Thread {
 	FileWriter chatLog;
 	FileWriter opLog;
 	IsLogined testLogined;
+	private static Lock chatLogLock = new ReentrantLock();
+	private static Lock writeAccountLock = new ReentrantLock();
 
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog) {
@@ -406,6 +410,7 @@ public class Waiter extends Thread {
 
 	public boolean doc2XmlFile(Document document, String filename) {
 		boolean flag = true;
+		writeAccountLock.lock();
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer();
@@ -421,6 +426,9 @@ public class Waiter extends Thread {
 		} catch (Exception ex) {
 			flag = false;
 			ex.printStackTrace();
+		}finally
+		{
+			writeAccountLock.unlock();
 		}
 		return flag;
 	}
@@ -447,6 +455,7 @@ public class Waiter extends Thread {
 	}
 
 	private void chatLog(String chat) {
+		chatLogLock.lock();
 		try {
 			chatLog.write(chat + "\r\n");
 			chatLog.flush();
@@ -454,15 +463,24 @@ public class Waiter extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally
+		{
+			chatLogLock.unlock();
+		}
 	}
 
 	private void opLog(String op) {
+		Server.opLogLock.lock();
 		try {
 			opLog.write(op + "\r\n");
 			opLog.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally
+		{
+			Server.opLogLock.unlock();
 		}
 	}
 }
