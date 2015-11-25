@@ -85,6 +85,7 @@ public class Client extends JFrame {
 		JMenuItem exit = new JMenuItem("Exit");
 		JMenuItem sendFile = new JMenuItem("Send file");
 		JMenuItem downloadFile = new JMenuItem("Download file");
+		JMenuItem status = new JMenuItem("Status");
 		JMenu account = new JMenu("Account");
 		JMenu file = new JMenu("File");
 		signIn.setAccelerator(KeyStroke.getKeyStroke('L', Toolkit
@@ -103,6 +104,7 @@ public class Client extends JFrame {
 		account.add(exit);
 		file.add(sendFile);
 		file.add(downloadFile);
+		file.add(status);
 		signIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (!isLogined)
@@ -137,9 +139,19 @@ public class Client extends JFrame {
 				downloadFile();
 			}
 		});
+		status.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				status();
+			}
+		});
 		setJMenuBar(bar);
 		setSize(900, 700);
 		centreWindow(this);
+	}
+
+	protected void status() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void changePWD() {
