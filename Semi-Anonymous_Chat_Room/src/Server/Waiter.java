@@ -138,6 +138,25 @@ public class Waiter extends Thread {
 		});
 	}
 
+	private void sendNotification(String message) {
+		try {
+			output.writeObject("@09" + message);
+			output.flush();
+		} catch (IOException ie) {
+			flag = false;
+			ie.getStackTrace();
+		}
+	}
+	private void SendNotificationToOthers(String message) {
+		// TODO Auto-generated method stub
+		Waiter waiter;
+		for (int i = 0; i < al.size(); ++i) {
+			waiter = al.get(i);
+			if (!this.equals(waiter)) {
+				waiter.sendNotification(message);
+			}
+		}
+	}
 	private void sendMessage(String message, ServerCommand cmd) {
 		// TODO Auto-generated method stub
 		try {
@@ -210,9 +229,10 @@ public class Waiter extends Thread {
 
 	public void run() {
 		flag = true;
-		String message = nickName + " connected";
-		sendMessage(message);
-		SendToOthers(message, false);
+		String message = "";
+//		String message = nickName + " connected";
+//		sendNotification(message);
+		//SendToOthers(message, false);
 		do {
 			try {
 				DateFormat dateFormat = new SimpleDateFormat(
@@ -244,6 +264,10 @@ public class Waiter extends Thread {
 				case 2:
 					if (!isLogined)
 						if (login(m.message)) {
+							String noticeToSelf = realName + " connected";
+							String noticeToOther = nickName + " connected";
+							sendNotification(noticeToSelf);
+							SendNotificationToOthers(noticeToOther);
 							opLog(realName + " - "
 									+ dateFormat.format(cal.getTime()) + "--"
 									+ "Logined");

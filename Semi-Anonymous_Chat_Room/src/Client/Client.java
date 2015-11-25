@@ -265,6 +265,14 @@ public class Client extends JFrame {
 			}
 		});
 	}
+	private void showNotification(final String txt) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				setDocs(txt, Color.gray, false, fontSize);
+			}
+		});
+	}
 	private void whileChatting() throws IOException {
 		// TODO Auto-generated method stub
 		String message = "";
@@ -316,10 +324,9 @@ public class Client extends JFrame {
 						chang_PWD.close();
 					break;
 				case 7: // Professor's message
-					showMessage(m.message,Color.red, true, 19, type);
+					showMessage(m.message,Color.red, false, fontSize, type);
 					break;
 				case 8:
-					System.out.println("1");
 					if (login != null)
 						login.close();
 					ableToType(true);
@@ -327,7 +334,9 @@ public class Client extends JFrame {
 					isLogined = true;
 					realName = login.getRealName();
 					type = UserType.Teacher;
-					System.out.println("2");
+					break;
+				case 9:
+					showNotification(m.message);
 					break;
 				default:
 					return;
@@ -422,7 +431,7 @@ public class Client extends JFrame {
 	}
 	public void insert(String str, AttributeSet attrSet) {
 		javax.swing.text.Document doc = j_public.getDocument();
-		str = "\n" + str;
+		str = str +"\n" ;
 		try {
 			doc.insertString(doc.getLength(), str, attrSet);
 		} catch (BadLocationException e) {
