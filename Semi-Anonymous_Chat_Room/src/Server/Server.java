@@ -32,7 +32,7 @@ public class Server<ref> extends JFrame {
 
 	private String logDir;// log directory
 	private String shareFileDir;// restore the directory of shared file.
-
+	
 	File logFile;
 	FileWriter log;
 	File opLogFile;
@@ -168,6 +168,7 @@ public class Server<ref> extends JFrame {
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.startRunning();
+		//server.fileReceiver();
 	}
 
 	private class KickDeadUser extends Thread {
@@ -200,5 +201,16 @@ public class Server<ref> extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void fileReceiver(){
+	    try{
+	    	ServerSocket ss = new ServerSocket(8000);
+	    	Socket s = ss.accept();
+	    	
+	    }catch(IOException ex){
+	    	System.err.println(ex);
+	    }
+	    
 	}
 }

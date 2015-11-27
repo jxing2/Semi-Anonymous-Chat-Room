@@ -1,7 +1,9 @@
 package Client;
 
 import java.io.*;
-//import java.net.*;
+//import java.net.ServerSocket;
+//import java.net.Socket;
+import java.net.*;
 //import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -20,6 +22,9 @@ public class ChooserWindow extends JFrame{
 	private BufferedInputStream fileBufferIn;
 	private BufferedOutputStream fileBufferOut;
 	private FileInputStream fileIn;
+	private Socket socket= null;
+	private int port = 7777;
+	  
 	
 	public ChooserWindow(){
 		pane = getContentPane();
@@ -76,26 +81,20 @@ public class ChooserWindow extends JFrame{
 		
 		
 	}
+	public String getFilePath() {
+		return filePath;
+	}
 	public void send(){
+		//String IP = Client.getIP();
 		if (checkField.getText().trim().equals("")){
 			return;
 		}
 		try{
-			File file = new File(filename);
-			fileIn = new FileInputStream(file);
-			fileBufferIn = new BufferedInputStream(fileIn);
-			byte[] buff = new byte[2048];
-			int num = fileBufferIn.read(buff);
-			while( num != -1 ){
-				fileBufferOut.write(buff, 0, num);
-				fileBufferOut.flush();
-				num = fileBufferIn.read(buff);
-			}
-		}catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}catch ( IOException e ){
-			e.printStackTrace();
-		}
+			socket = new Socket("localhost", 8000);
+			
+		} catch(IOException ex){
+	    	System.err.println(ex);
+	    }
 	}
 }
 
