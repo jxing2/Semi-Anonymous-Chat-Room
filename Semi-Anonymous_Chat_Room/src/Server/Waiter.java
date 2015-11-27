@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -38,16 +40,18 @@ public class Waiter extends Thread {
 	public String realName;
 	private boolean isLogined = false;
 
-	private enum Type {
+	public enum UserType {
 		Teacher, Student
 	}
 
-	private Type type;
+	private UserType type;
 	public boolean flag;
 	private Document doc;
 	FileWriter chatLog;
 	FileWriter opLog;
 	IsLogined testLogined;
+	private static Lock chatLogLock = new ReentrantLock();
+	private static Lock writeAccountLock = new ReentrantLock();
 
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog) {
@@ -81,18 +85,30 @@ public class Waiter extends Thread {
 		setupStreams();
 	}
 
-	private void sendMessage(String message, String nickName, boolean isTrim) {
+	// only used to send message to other users.
+	private void SendToOthers(String message, String nickName, String realName,
+			boolean isTrim, UserType type) {
 		// TODO Auto-generated method stub
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
-			output.writeObject("@00"
-					+ nickName
-					+ " - "
-					+ dateFormat.format(cal.getTime())
-					+ "\n"
-					+ (isTrim ? message.substring(3, message.length())
-							: message));
+			if (type == UserType.Teacher) {
+				output.writeObject("@07"
+						+ realName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
+			} else {
+				output.writeObject("@00"
+						+ nickName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
+			}
 			output.flush();
 		} catch (IOException ie) {
 			// j_public.append("Something WRONG");
@@ -106,6 +122,45 @@ public class Waiter extends Thread {
 		sendMessage(message, ServerCommand.PlainText);
 	}
 
+	private void SendToOthers(String message, boolean isTrim) {
+		// TODO Auto-generated method stub
+		Waiter waiter;
+		for (int i = 0; i < al.size(); ++i) {
+			waiter = al.get(i);
+			if (!this.equals(waiter)) {
+				waiter.SendToOthers(message, nickName, realName, isTrim, type);
+			}
+		}
+	}
+
+	private void showMessage(final String txt) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				j_public.append(txt + "\n");
+			}
+		});
+	}
+
+	private void sendNotification(String message) {
+		try {
+			output.writeObject("@09" + message);
+			output.flush();
+		} catch (IOException ie) {
+			flag = false;
+			ie.getStackTrace();
+		}
+	}
+	private void SendNotificationToOthers(String message) {
+		// TODO Auto-generated method stub
+		Waiter waiter;
+		for (int i = 0; i < al.size(); ++i) {
+			waiter = al.get(i);
+			if (!this.equals(waiter)) {
+				waiter.sendNotification(message);
+			}
+		}
+	}
 	private void sendMessage(String message, ServerCommand cmd) {
 		// TODO Auto-generated method stub
 		try {
@@ -134,7 +189,10 @@ public class Waiter extends Thread {
 				// + "\n" + message);
 				break;
 			case Login_Success:
-				output.writeObject("@04" + message);
+				if (type == UserType.Teacher)
+					output.writeObject("@08" + message);
+				else
+					output.writeObject("@04" + message);
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
 				isLogined = true;
@@ -157,26 +215,6 @@ public class Waiter extends Thread {
 		}
 	}
 
-	private void SendToOthers(String message, boolean isTrim) {
-		// TODO Auto-generated method stub
-		Waiter waiter;
-		for (int i = 0; i < al.size(); ++i) {
-			waiter = al.get(i);
-			if (!this.equals(waiter)) {
-				waiter.sendMessage(message, nickName, isTrim);
-			}
-		}
-	}
-
-	private void showMessage(final String txt) {
-		// TODO Auto-generated method stub
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				j_public.append(txt + "\n");
-			}
-		});
-	}
-
 	public void close() {
 		// TODO Auto-generated method stub
 		showMessage("Closing connection");
@@ -195,9 +233,10 @@ public class Waiter extends Thread {
 
 	public void run() {
 		flag = true;
-		String message = nickName + " connected";
-		sendMessage(message);
-		SendToOthers(message, false);
+		String message = "";
+//		String message = nickName + " connected";
+//		sendNotification(message);
+		//SendToOthers(message, false);
 		do {
 			try {
 				DateFormat dateFormat = new SimpleDateFormat(
@@ -229,6 +268,10 @@ public class Waiter extends Thread {
 				case 2:
 					if (!isLogined)
 						if (login(m.message)) {
+							String noticeToSelf = realName + " connected";
+							String noticeToOther = nickName + " connected";
+							sendNotification(noticeToSelf);
+							SendNotificationToOthers(noticeToOther);
 							opLog(realName + " - "
 									+ dateFormat.format(cal.getTime()) + "--"
 									+ "Logined");
@@ -295,10 +338,9 @@ public class Waiter extends Thread {
 	private boolean login(String message) {
 		// TODO Auto-generated method stub
 		User user = GetUserInfo(message);
-		
+
 		testLogined = new IsLogined(al, user.name);
-		if(testLogined.run())
-		{
+		if (testLogined.run()) {
 			sendMessage("Failed: This account already signed in!",
 					ServerCommand.Login_Alert);
 			return false;
@@ -312,9 +354,10 @@ public class Waiter extends Thread {
 					&& allUser.item(i).getAttributes().getNamedItem("PWD")
 							.getNodeValue().equals(user.password)) {
 				realName = user.name;
-				type = allUser.item(i).getAttributes().getNamedItem("Type")
-						.getNodeValue().equals("1") ? Type.Student
-						: Type.Teacher;
+				type = (allUser.item(i).getAttributes().getNamedItem("Type")
+						.getNodeValue().equals("1")) ? UserType.Student
+						: UserType.Teacher;
+				System.out.println(type);
 				sendMessage("Success!", ServerCommand.Login_Success);
 				return true;
 			}
@@ -367,6 +410,7 @@ public class Waiter extends Thread {
 
 	public boolean doc2XmlFile(Document document, String filename) {
 		boolean flag = true;
+		writeAccountLock.lock();
 		try {
 			TransformerFactory tFactory = TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer();
@@ -382,6 +426,9 @@ public class Waiter extends Thread {
 		} catch (Exception ex) {
 			flag = false;
 			ex.printStackTrace();
+		}finally
+		{
+			writeAccountLock.unlock();
 		}
 		return flag;
 	}
@@ -408,6 +455,7 @@ public class Waiter extends Thread {
 	}
 
 	private void chatLog(String chat) {
+		chatLogLock.lock();
 		try {
 			chatLog.write(chat + "\r\n");
 			chatLog.flush();
@@ -415,15 +463,24 @@ public class Waiter extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		finally
+		{
+			chatLogLock.unlock();
+		}
 	}
 
 	private void opLog(String op) {
+		Server.opLogLock.lock();
 		try {
 			opLog.write(op + "\r\n");
 			opLog.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally
+		{
+			Server.opLogLock.unlock();
 		}
 	}
 }

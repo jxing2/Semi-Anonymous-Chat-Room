@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-
 public class ChooserWindow extends JFrame{
 	//pop out a window to choose a file
 	private JTextField checkField;//display the file you choose
