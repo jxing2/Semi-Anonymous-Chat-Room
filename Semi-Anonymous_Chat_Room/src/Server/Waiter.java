@@ -118,12 +118,7 @@ public class Waiter extends Thread {
 			ie.getStackTrace();
 		}
 	}
-
-	private void sendMessage(String message) {
-		// TODO Auto-generated method stub
-		sendMessage(message, ServerCommand.PlainText);
-	}
-
+	
 	private void SendToOthers(String message, boolean isTrim) {
 		// TODO Auto-generated method stub
 		Waiter waiter;
