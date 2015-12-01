@@ -178,7 +178,7 @@ public class Server<ref> extends JFrame {
 						opLog(((al.get(i).realName == null) ? al.get(i).nickName
 								: al.get(i).realName)
 								+ " is Logging out. --"
-								+ logdateFormat.format(cal.getTime()));
+								+ logdateFormat.format(cal.getTime())+". IP:"+ al.get(i).getClientIP());
 						al.remove(i);
 						i--;
 					}
