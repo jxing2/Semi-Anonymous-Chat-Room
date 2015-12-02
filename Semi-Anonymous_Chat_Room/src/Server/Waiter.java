@@ -39,7 +39,7 @@ public class Waiter extends Thread {
 	public String nickName;
 	public String realName;
 	private boolean isLogined = false;
-
+	String ClientIP;
 	public enum UserType {
 		Teacher, Student
 	}
@@ -67,6 +67,8 @@ public class Waiter extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			sock = server.accept();
+			ClientIP = sock.getRemoteSocketAddress().toString();
+			ClientIP = ClientIP.substring(1, ClientIP.indexOf(":"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,12 +118,7 @@ public class Waiter extends Thread {
 			ie.getStackTrace();
 		}
 	}
-
-	private void sendMessage(String message) {
-		// TODO Auto-generated method stub
-		sendMessage(message, ServerCommand.PlainText);
-	}
-
+	
 	private void SendToOthers(String message, boolean isTrim) {
 		// TODO Auto-generated method stub
 		Waiter waiter;
@@ -258,11 +255,11 @@ public class Waiter extends Thread {
 					if (register(m.message)) {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Registered");
+								+ "Registered. IP:" + ClientIP);
 					} else {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Register failed");
+								+ "Register failed. IP:" + ClientIP);
 					}
 					break;
 				case 2:
@@ -274,22 +271,22 @@ public class Waiter extends Thread {
 							SendNotificationToOthers(noticeToOther);
 							opLog(realName + " - "
 									+ dateFormat.format(cal.getTime()) + "--"
-									+ "Logined");
+									+ "Logined. IP:" + ClientIP);
 						} else {
-							opLog(realName + " - "
+							opLog(GetUserInfo(m.message).name + " - "
 									+ dateFormat.format(cal.getTime()) + "--"
-									+ "Login failled");
+									+ "Login failed. IP:" + ClientIP);
 						}
 					break;
 				case 3:
 					if (editProfile(m.message)) {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Changed password");
+								+ "Changed password. IP:" + ClientIP);
 					} else {
 						opLog(GetUserInfo(m.message).name + " - "
 								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Change password failed");
+								+ "Change password failed. IP:" + ClientIP);
 					}
 					break;
 				}
@@ -482,5 +479,9 @@ public class Waiter extends Thread {
 		{
 			Server.opLogLock.unlock();
 		}
+	}
+	public String getClientIP()
+	{
+		return ClientIP;
 	}
 }
