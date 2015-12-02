@@ -28,7 +28,7 @@ public class Server<ref> extends JFrame {
 	private ArrayList<Waiter> al;
 	private int count; // count how many times people logged.
 	private int port;
-	private int fileport;
+	private int fileport = port - 1;
 	KickDeadUser kick;
 	private Document doc;
 	private Document configDoc;
@@ -143,7 +143,7 @@ public class Server<ref> extends JFrame {
 			kick.start();
 			while (true) {
 				try {
-					waiter = new Waiter(j_public, al, count, doc, log, opLog);
+					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory);
 					waiter.serve(server);
 					waiter.start();
 					al.add(waiter);
@@ -180,7 +180,7 @@ public class Server<ref> extends JFrame {
 						opLog(((al.get(i).realName == null) ? al.get(i).nickName
 								: al.get(i).realName)
 								+ " is Logging out. --"
-								+ logdateFormat.format(cal.getTime())+". IP:"+ al.get(i).getClientIP());
+								+ logdateFormat.format(cal.getTime()));
 						al.remove(i);
 						i--;
 					}

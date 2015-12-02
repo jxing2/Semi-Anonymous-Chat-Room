@@ -29,6 +29,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+
 public class Waiter extends Thread {
 	public ObjectOutputStream output;
 	public ObjectInputStream input;
@@ -36,8 +37,10 @@ public class Waiter extends Thread {
 	public Socket sock;
 	private JTextArea j_public;
 	private ArrayList<Waiter> al;
+	private ArrayList<FileReceiver> al_send;
 	public String nickName;
 	public String realName;
+	private String shareFileDir;
 	private boolean isLogined = false;
 	String ClientIP;
 	public enum UserType {
@@ -52,15 +55,17 @@ public class Waiter extends Thread {
 	IsLogined testLogined;
 	private static Lock chatLogLock = new ReentrantLock();
 	private static Lock writeAccountLock = new ReentrantLock();
-
+	File sharedDir;
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
-			Document doc, FileWriter chatLog, FileWriter opLog) {
+			Document doc, FileWriter chatLog, FileWriter opLog, File shareFileDir) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
 		this.doc = doc;
 		this.chatLog = chatLog;
 		this.opLog = opLog;
+		this.sharedDir = shareFileDir; 
+		al_send = new ArrayList<FileReceiver>();
 	}
 
 	private void waitForConnection(ServerSocket server) {
@@ -202,6 +207,12 @@ public class Waiter extends Thread {
 				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
 						+ "\n" + message);
 				break;
+			case SendRequestReply_Success:
+				output.writeObject("@10" + message);
+			 	break;
+			case SendRequestReply_Alert:
+				output.writeObject("@11" + message);
+			 	break;
 			default:
 				return;
 			}
@@ -289,6 +300,9 @@ public class Waiter extends Thread {
 								+ "Change password failed. IP:" + ClientIP);
 					}
 					break;
+				case 4:
+					validate(m.message);
+					break;
 				}
 				// System.out.println(message);
 			} catch (ClassNotFoundException cnfe) {
@@ -301,6 +315,27 @@ public class Waiter extends Thread {
 				flag = false;
 			}
 		} while (flag);
+	}
+
+	private void validate(String message) {
+		// TODO Auto-generated method stub
+		String[] tmp = message.split("\n");
+		String fileName = tmp[0];
+		long size = Integer.parseInt(tmp[1]);
+		String filePath = tmp[2];
+		FileReceiver fr = new FileReceiver(fileName, sharedDir, size);
+
+		if(fr.test())
+		{
+			fr.start();
+			sendMessage(filePath,ServerCommand.SendRequestReply_Success);
+		}//System.out.println(message);
+		else
+		{
+			sendMessage("Not ready!",ServerCommand.SendRequestReply_Alert);
+			return ;
+		}
+		al_send.add(fr);
 	}
 
 	private boolean editProfile(String message) {

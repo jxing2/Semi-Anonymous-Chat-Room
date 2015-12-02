@@ -22,11 +22,12 @@ public class ChooserWindow extends JFrame{
 	private BufferedOutputStream fileBufferOut;
 	private FileInputStream fileIn;
 	private Socket socket= null;
-	private int fileport = 5600;
-	  
-	
-	public ChooserWindow(){
+	private int fileport;
+	private Client parent;
+	private long size;
+	public ChooserWindow(final Client parent){
 		pane = getContentPane();
+		this.parent = parent;
 		pane.setLayout(null);
 		//chooserWindow = new JFrame();
 		checkField= new JTextField();
@@ -57,8 +58,9 @@ public class ChooserWindow extends JFrame{
 						int returnVal = fileChooser.showOpenDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
 					    	filename = fileChooser.getSelectedFile().getName();
-					    	checkField.setText(filename);
+					    	
 					    	filePath = fileChooser.getSelectedFile().getAbsolutePath();
+					    	checkField.setText(filePath);
 					    }
 					}
 			
@@ -77,7 +79,13 @@ public class ChooserWindow extends JFrame{
 						if (checkField.getText().trim().equals("")){
 							return;
 						}
-						Send send = new Send(filePath, fileport);
+						File file = new File(filePath);
+						size = file.length();
+						parent.sendMessage(
+								filename+"\n"+size+"\n"+filePath,
+								CommandType.SendFileRequest);
+						//Send send = new Send(filePath, fileport);
+						//cancle.doClick();
 					}
 				});		
 	}

@@ -39,6 +39,7 @@ public class Client extends JFrame {
 	//private String message = "";
 	private String IP;// host
 	private int port;
+	private int filePort;
 	private String realName;
 	private Document doc;
 	private UserType type;
@@ -46,6 +47,7 @@ public class Client extends JFrame {
 	Sign_Up sign_up;
 	Sign_In login;
 	Change_PWD chang_PWD;
+	ChooserWindow chooserwindow;
 	JScrollPane jsp;
 	JMenuItem signIn;
 	private boolean isLogined = false;
@@ -162,7 +164,7 @@ public class Client extends JFrame {
 	protected void sendFile() {
 		// TODO Auto-generated method stub
 		// pop out a window to choose a file
-		ChooserWindow chooserwindow = new ChooserWindow();
+		chooserwindow = new ChooserWindow(this);
 	}
 
 	private void downloadFile() {
@@ -211,6 +213,7 @@ public class Client extends JFrame {
 						port = Integer.parseInt(socketInfo.item(i)
 								.getAttributes().item(1).getNodeValue()
 								.toString());
+						filePort = port -1;
 						break;
 					}
 				}
@@ -350,6 +353,13 @@ public class Client extends JFrame {
 				case 9:
 					showNotification(m.message);
 					break;
+				case 10:
+					JOptionPane.showMessageDialog(chooserwindow, "Sending File:"+m.message);
+					//connect to server
+					SendFile(m.message,filePort);
+					break;
+				case 11:
+					break;
 				default:
 					return;
 				}
@@ -357,6 +367,13 @@ public class Client extends JFrame {
 				showMessage("I dont know what user send.");
 			}
 		} while (true);
+	}
+
+	private void SendFile(String filePath, int filePort) {
+		// TODO Auto-generated method stub
+		Send send = new Send(filePath, filePort);
+		send.start();
+		//al_send.add(send);
 	}
 
 	private Message handleMessage(String message) {
@@ -395,6 +412,9 @@ public class Client extends JFrame {
 				break;
 			case EditProfile:
 				tmp = "@03" + message;
+				break;
+			case SendFileRequest:
+				tmp = "@04"+ message;
 				break;
 			default:
 				return;// do nothing
