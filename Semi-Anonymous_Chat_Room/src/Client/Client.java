@@ -36,7 +36,7 @@ public class Client extends JFrame {
 	private ObjectOutputStream output;
 	private ObjectInputStream input;
 	private Socket sock;
-	private String message = "";
+	//private String message = "";
 	private String IP;// host
 	private int port;
 	private String realName;
@@ -428,7 +428,7 @@ public class Client extends JFrame {
 	private void connect() {
 		// TODO Auto-generated method stub
 		try {
-			sock = new Socket(IP, 6789);
+			sock = new Socket(IP, port);
 		} catch (IOException ie) {
 			JOptionPane.showMessageDialog(this, "Cannot connect to server!");
 			System.exit(0);
