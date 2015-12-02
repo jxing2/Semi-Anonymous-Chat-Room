@@ -28,6 +28,7 @@ public class Server<ref> extends JFrame {
 	private ArrayList<Waiter> al;
 	private int count; // count how many times people logged.
 	private int port;
+	private int fileport;
 	KickDeadUser kick;
 	private Document doc;
 	private Document configDoc;
@@ -79,7 +80,7 @@ public class Server<ref> extends JFrame {
 		}
 
 		if (!SharedDirectory.exists() && !SharedDirectory.isDirectory()) {
-			System.out.println("//²»´æÔÚ");
+			
 			SharedDirectory.mkdirs();
 		}
 
@@ -210,7 +211,7 @@ public class Server<ref> extends JFrame {
 	
 	private void fileReceiver(){
 	    try{
-	    	ServerSocket ss = new ServerSocket(8000);
+	    	ServerSocket ss = new ServerSocket(fileport);
 	    	Socket s = ss.accept();
 	    	
 	    }catch(IOException ex){

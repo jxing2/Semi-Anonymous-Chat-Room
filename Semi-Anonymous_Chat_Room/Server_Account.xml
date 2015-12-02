@@ -4,5 +4,5 @@
 		<User ID="fan" PWD="123456" Type="1"/>
 		<User ID="li" PWD="123456" Type="1"/>
 		<User ID="kruger" PWD="123456" Type="0"/>
-	</UserList>
+	<User ID="xiaoyu" PWD="123456" Type="1"/><User ID="yunyang" PWD="123456" Type="1"/></UserList>
 </Account>

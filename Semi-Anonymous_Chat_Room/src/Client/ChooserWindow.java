@@ -22,7 +22,7 @@ public class ChooserWindow extends JFrame{
 	private BufferedOutputStream fileBufferOut;
 	private FileInputStream fileIn;
 	private Socket socket= null;
-	private int port = 7777;
+	private int fileport = 5600;
 	  
 	
 	public ChooserWindow(){
@@ -74,26 +74,12 @@ public class ChooserWindow extends JFrame{
 		send.addActionListener(
 				new ActionListener(){
 					public void actionPerformed(ActionEvent e){
-						send();
+						if (checkField.getText().trim().equals("")){
+							return;
+						}
+						Send send = new Send(filePath, fileport);
 					}
-				});
-		
-		
-	}
-	public String getFilePath() {
-		return filePath;
-	}
-	public void send(){
-		//String IP = Client.getIP();
-		if (checkField.getText().trim().equals("")){
-			return;
-		}
-		try{
-			socket = new Socket("localhost", 8000);
-			
-		} catch(IOException ex){
-	    	System.err.println(ex);
-	    }
+				});		
 	}
 }
 
