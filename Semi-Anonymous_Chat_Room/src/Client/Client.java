@@ -353,10 +353,10 @@ public class Client extends JFrame {
 				case 9:
 					showNotification(m.message);
 					break;
-				case 10:
+				case 10://SendRequestReply_Success
 					JOptionPane.showMessageDialog(chooserwindow, "Sending File:"+m.message);
-					//connect to server
-					SendFile(m.message,filePort);
+					//Socket fileSocket = new Socket(IP, filePort); //connect to server
+					SendFile(m.message, filePort, IP);
 					break;
 				case 11:
 					break;
@@ -369,9 +369,10 @@ public class Client extends JFrame {
 		} while (true);
 	}
 
-	private void SendFile(String filePath, int filePort) {
+	private void SendFile(String filePath, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		Send send = new Send(filePath, filePort);
+		System.out.println(IP+":"+filePort+":"+filePath);
+		Send send = new Send(filePath, filePort, IP);
 		send.start();
 		//al_send.add(send);
 	}

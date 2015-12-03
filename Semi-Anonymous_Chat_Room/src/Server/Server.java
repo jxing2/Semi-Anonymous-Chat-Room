@@ -25,10 +25,11 @@ public class Server<ref> extends JFrame {
 
 	private JTextArea j_public;
 	private ServerSocket server;
+	private ServerSocket fileServer;
 	private ArrayList<Waiter> al;
 	private int count; // count how many times people logged.
 	private int port;
-	private int fileport = port - 1;
+	private int filePort;
 	KickDeadUser kick;
 	private Document doc;
 	private Document configDoc;
@@ -92,6 +93,12 @@ public class Server<ref> extends JFrame {
 			showMessage("log file cannot read or write!");
 			e1.printStackTrace();
 		}
+		try {
+			fileServer = new ServerSocket(filePort);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	private void readXML() {
@@ -119,6 +126,7 @@ public class Server<ref> extends JFrame {
 		for (int i = 0; i < socketList.getLength(); ++i) {
 			port = Integer.parseInt(socketList.item(i).getAttributes()
 					.getNamedItem("Port").getNodeValue().toString());
+			filePort = port-1;
 			break;
 		}
 		NodeList logDirList = configDoc.getElementsByTagName("LogDir");
@@ -143,7 +151,7 @@ public class Server<ref> extends JFrame {
 			kick.start();
 			while (true) {
 				try {
-					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory);
+					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory,fileServer);
 					waiter.serve(server);
 					waiter.start();
 					al.add(waiter);
@@ -169,7 +177,7 @@ public class Server<ref> extends JFrame {
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.startRunning();
-		//server.fileReceiver();
+		
 	}
 
 	private class KickDeadUser extends Thread {
@@ -209,14 +217,5 @@ public class Server<ref> extends JFrame {
 		}
 	}
 	
-	private void fileReceiver(){
-	    try{
-	    	ServerSocket ss = new ServerSocket(fileport);
-	    	Socket s = ss.accept();
-	    	
-	    }catch(IOException ex){
-	    	System.err.println(ex);
-	    }
-	    
-	}
+
 }

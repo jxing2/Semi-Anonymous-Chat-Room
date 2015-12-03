@@ -17,12 +17,12 @@ public class ChooserWindow extends JFrame{
 	private JButton cancle;
 	private Container pane;
 	private String filePath;
-	private String filename;
+	private String fileName;
 	private BufferedInputStream fileBufferIn;
 	private BufferedOutputStream fileBufferOut;
 	private FileInputStream fileIn;
 	private Socket socket= null;
-	private int fileport;
+	private int filePort;
 	private Client parent;
 	private long size;
 	public ChooserWindow(final Client parent){
@@ -57,7 +57,7 @@ public class ChooserWindow extends JFrame{
 						fileChooser.setVisible(true);
 						int returnVal = fileChooser.showOpenDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					    	filename = fileChooser.getSelectedFile().getName();
+					    	fileName = fileChooser.getSelectedFile().getName();
 					    	
 					    	filePath = fileChooser.getSelectedFile().getAbsolutePath();
 					    	checkField.setText(filePath);
@@ -73,7 +73,7 @@ public class ChooserWindow extends JFrame{
 					}
 				});
 		
-		send.addActionListener(
+		send.addActionListener(//send file upload request
 				new ActionListener(){
 					public void actionPerformed(ActionEvent e){
 						if (checkField.getText().trim().equals("")){
@@ -82,10 +82,8 @@ public class ChooserWindow extends JFrame{
 						File file = new File(filePath);
 						size = file.length();
 						parent.sendMessage(
-								filename+"\n"+size+"\n"+filePath,
+								fileName+"\n"+size+"\n"+filePath,
 								CommandType.SendFileRequest);
-						//Send send = new Send(filePath, fileport);
-						//cancle.doClick();
 					}
 				});		
 	}

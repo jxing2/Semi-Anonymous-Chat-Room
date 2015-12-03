@@ -34,7 +34,9 @@ public class Waiter extends Thread {
 	public ObjectOutputStream output;
 	public ObjectInputStream input;
 	public ServerSocket server;
+	public ServerSocket fileServer;
 	public Socket sock;
+	private int filePort;
 	private JTextArea j_public;
 	private ArrayList<Waiter> al;
 	private ArrayList<FileReceiver> al_send;
@@ -57,7 +59,8 @@ public class Waiter extends Thread {
 	private static Lock writeAccountLock = new ReentrantLock();
 	File sharedDir;
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
-			Document doc, FileWriter chatLog, FileWriter opLog, File shareFileDir) {
+			Document doc, FileWriter chatLog, FileWriter opLog,
+			File shareFileDir, ServerSocket fileServer) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
@@ -66,6 +69,7 @@ public class Waiter extends Thread {
 		this.opLog = opLog;
 		this.sharedDir = shareFileDir; 
 		al_send = new ArrayList<FileReceiver>();
+		this.fileServer = fileServer; 
 	}
 
 	private void waitForConnection(ServerSocket server) {
@@ -323,7 +327,7 @@ public class Waiter extends Thread {
 		String fileName = tmp[0];
 		long size = Integer.parseInt(tmp[1]);
 		String filePath = tmp[2];
-		FileReceiver fr = new FileReceiver(fileName, sharedDir, size);
+		FileReceiver fr = new FileReceiver(fileName, sharedDir, size, fileServer);
 
 		if(fr.test())
 		{
