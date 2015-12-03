@@ -307,6 +307,9 @@ public class Waiter extends Thread {
 				case 4:
 					validate(m.message);
 					break;
+				case 5://download file request
+					
+					break;
 				}
 				// System.out.println(message);
 			} catch (ClassNotFoundException cnfe) {

@@ -170,7 +170,7 @@ public class Client extends JFrame {
 
 	private void downloadFile() {
 		// TODO Auto-generated method stub
-		downloadWindow = new DownloadWindow(this);
+		downloadWindow = new DownloadWindow(this,"fileDir");
 	}
 
 	private void signIn() {
@@ -361,6 +361,9 @@ public class Client extends JFrame {
 					break;
 				case 11:
 					break;
+				case 12://download request reply
+					downloadFile(m.message, filePort, IP);
+					break;
 				default:
 					return;
 				}
@@ -368,6 +371,11 @@ public class Client extends JFrame {
 				showMessage("I dont know what user send.");
 			}
 		} while (true);
+	}
+
+	private void downloadFile(String downloadFilePath, int filePort, String iP) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void SendFile(String filePath, int filePort, String IP) {

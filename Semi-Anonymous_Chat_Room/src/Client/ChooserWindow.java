@@ -11,14 +11,14 @@ public class ChooserWindow extends JFrame{
 	private JTextField checkField;//display the file you choose
 	private JButton choose;
 	private JButton send;//pop out chooser window when clicked
-	private JButton cancle;
+	private JButton cancel;
 	private Container pane;
 	private String filePath;
 	private String fileName;
-	private BufferedInputStream fileBufferIn;
-	private BufferedOutputStream fileBufferOut;
-	private FileInputStream fileIn;
-	private int filePort;
+	//private BufferedInputStream fileBufferIn;
+	//private BufferedOutputStream fileBufferOut;
+	//private FileInputStream fileIn;
+	//private int filePort;
 	private Client parent;
 	private long size;
 	public ChooserWindow(final Client parent){
@@ -33,13 +33,13 @@ public class ChooserWindow extends JFrame{
 		choose.setBounds(240,30,100,30);
 		send = new JButton("Send");
 		send.setBounds(70,75,100,30);
-		cancle = new JButton("Cancle");
-		cancle.setBounds(190,75,100,30);
+		cancel = new JButton("Cancel");
+		cancel.setBounds(190,75,100,30);
 		
 		pane.add(checkField);
 		pane.add(choose);
 		pane.add(send);
-		pane.add(cancle);
+		pane.add(cancel);
 		setSize(360,150);
 		setResizable(false);
 		Client.centreWindow(this);
@@ -62,7 +62,7 @@ public class ChooserWindow extends JFrame{
 			
 		});
 		
-		cancle.addActionListener(
+		cancel.addActionListener(
 				new ActionListener(){
 					public void actionPerformed(ActionEvent e){
 						dispose();
@@ -80,6 +80,7 @@ public class ChooserWindow extends JFrame{
 						parent.sendMessage(
 								fileName+"\n"+size+"\n"+filePath,
 								CommandType.SendFileRequest);
+						dispose();
 					}
 				});		
 	}
