@@ -47,7 +47,8 @@ public class Client extends JFrame {
 	Sign_Up sign_up;
 	Sign_In login;
 	Change_PWD chang_PWD;
-	ChooserWindow chooserwindow;
+	ChooserWindow chooserWindow;
+	DownloadWindow downloadWindow;
 	JScrollPane jsp;
 	JMenuItem signIn;
 	private boolean isLogined = false;
@@ -164,12 +165,12 @@ public class Client extends JFrame {
 	protected void sendFile() {
 		// TODO Auto-generated method stub
 		// pop out a window to choose a file
-		chooserwindow = new ChooserWindow(this);
+		chooserWindow = new ChooserWindow(this);
 	}
 
 	private void downloadFile() {
 		// TODO Auto-generated method stub
-
+		downloadWindow = new DownloadWindow(this);
 	}
 
 	private void signIn() {
@@ -354,7 +355,7 @@ public class Client extends JFrame {
 					showNotification(m.message);
 					break;
 				case 10://SendRequestReply_Success
-					JOptionPane.showMessageDialog(chooserwindow, "Sending File:"+m.message);
+					JOptionPane.showMessageDialog(chooserWindow, "Sending File:"+m.message);
 					//Socket fileSocket = new Socket(IP, filePort); //connect to server
 					SendFile(m.message, filePort, IP);
 					break;

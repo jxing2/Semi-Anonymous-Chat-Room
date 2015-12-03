@@ -1,10 +1,7 @@
 package Client;
 
 import java.io.*;
-//import java.net.ServerSocket;
-//import java.net.Socket;
 import java.net.*;
-//import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -21,7 +18,6 @@ public class ChooserWindow extends JFrame{
 	private BufferedInputStream fileBufferIn;
 	private BufferedOutputStream fileBufferOut;
 	private FileInputStream fileIn;
-	private Socket socket= null;
 	private int filePort;
 	private Client parent;
 	private long size;
