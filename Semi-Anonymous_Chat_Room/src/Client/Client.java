@@ -429,7 +429,10 @@ public class Client extends JFrame {
 				tmp = "@04"+ message;
 				break;
 			case DownloadFileRequest:
-				tmp = "@05" +message;
+				tmp = "@05" + message;
+				break;
+			case FileListRequest:
+				tmp = "@06" + message;
 				break;
 			default:
 				return;// do nothing

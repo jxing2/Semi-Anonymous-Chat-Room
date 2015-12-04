@@ -44,7 +44,7 @@ public class Waiter extends Thread {
 	private ArrayList<FileReceiver> al_send;
 	public String nickName;
 	public String realName;
-	private String shareFileDir;
+	private String sharedFileDir;
 	private boolean isLogined = false;
 	String ClientIP;
 	public enum UserType {
@@ -62,14 +62,14 @@ public class Waiter extends Thread {
 	File sharedDir;
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog,
-			File shareFileDir, ServerSocket fileServer) {
+			File sharedDir, ServerSocket fileServer) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
 		this.doc = doc;
 		this.chatLog = chatLog;
 		this.opLog = opLog;
-		this.sharedDir = shareFileDir; 
+		this.sharedDir = sharedDir; 
 		al_send = new ArrayList<FileReceiver>();
 		this.fileServer = fileServer; 
 	}
@@ -316,8 +316,12 @@ public class Waiter extends Thread {
 					validate(m.message);
 					break;
 				case 5://download file request
-					sendMessage(shareFileDir,ServerCommand.DownloadRequestReply_Success);
-					System.out.println("Waiter case 5 = "+shareFileDir);
+					sharedFileDir = sharedDir.getAbsolutePath();
+					sendMessage(sharedFileDir,ServerCommand.DownloadRequestReply_Success);
+					System.out.println("Waiter case 5 = "+ sharedFileDir);
+					break;
+				case 6://File list request
+					//sendMessage(sharedFileDir,ServerCommand.FileListRequestReply);
 					break;
 				}
 				// System.out.println(message);

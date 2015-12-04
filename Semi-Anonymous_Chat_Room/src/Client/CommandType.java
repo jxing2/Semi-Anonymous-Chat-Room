@@ -1,5 +1,5 @@
 package Client;
 
 public enum CommandType {
-PlainText,Register,Login,EditProfile, SendFileRequest, DownloadFileRequest
+PlainText,Register,Login,EditProfile, SendFileRequest, DownloadFileRequest, FileListRequest
 }
