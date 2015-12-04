@@ -66,13 +66,15 @@ public class DownloadWindow extends JFrame {
 						fileChooser.setDialogTitle("Choose a directory");
 						//fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 						fileChooser.setVisible(true);
+						//fileChooser.setMultiSelectionEnabled(false);
 						int returnVal = fileChooser.showSaveDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
 					    	savePath = fileChooser.getSelectedFile().getAbsolutePath();
+					    	parent.sendMessage(fileToSave, CommandType.DownloadFileRequest);
 					    	dispose();
 					    	System.out.println(savePath);
-					    	Download saving = new Download(savePath);
-					    	saving.start();
+//					    	Download saving = new Download(savePath);
+//					    	saving.start();
 					    }
 					}
 				});	
@@ -87,12 +89,12 @@ public class DownloadWindow extends JFrame {
 	}
 	public void reloadFileList(String[] fileList)
 	{
-		//top = new DefaultMutableTreeNode("Share");
+		
 		for (int i = 0; i < fileList.length; i++) {
 			top.add(new DefaultMutableTreeNode(fileList[i]));
 		}
 		tree.expandRow(0);
-		//tree = new JTree(top);
+		
 	}
 	class treeSelectionListener implements TreeSelectionListener
 	{
@@ -101,8 +103,8 @@ public class DownloadWindow extends JFrame {
 			// TODO Auto-generated method stub
 			selectedNode = (DefaultMutableTreeNode)
                     tree.getLastSelectedPathComponent();
-			//fileToSave = selectedNode.getUserObject().toString();
-			//System.out.println(selectedNode.getUserObject().toString());
+			fileToSave = selectedNode.getUserObject().toString();
+			
 		}
 		
 	}

@@ -175,7 +175,7 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		downloadWindow = new DownloadWindow(this);
 		sendMessage("request downloading",CommandType.FileListRequest);
-		//downloadWindow = new DownloadWindow(this, "fileDir");
+		
 	}
 
 	private void signIn() {
@@ -367,7 +367,7 @@ public class Client extends JFrame {
 					break;
 				case 12://download request reply success
 					//System.out.println("Client= "+m.message);
-					//downloadFile();
+					//downloadFile(m.message, filePort);
 					break;
 				case 13:
 					handleList(m.message);
@@ -392,7 +392,7 @@ public class Client extends JFrame {
 		}
 	}
 
-	private void downloadFile(String savePath, int filePort) {
+	private void downloadFile(String fileName, int filePort) {
 		// TODO Auto-generated method stub
 		//sendMessage("",CommandType.DownloadFileRequest);
 	}

@@ -78,7 +78,7 @@ public class Server<ref> extends JFrame {
 		SharedDirectory = new File(shareFileDir);
 		if (!logFile.getParentFile().exists()) {
 			// If directory does not exist --> create it.
-			logFile.mkdir();
+			logFile.getParentFile().mkdirs();
 		}
 
 		if (!SharedDirectory.exists() && !SharedDirectory.isDirectory()) {
