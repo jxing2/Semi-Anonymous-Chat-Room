@@ -27,6 +27,7 @@ public class Server<ref> extends JFrame {
 	private ServerSocket server;
 	private ServerSocket fileServer;
 	private ArrayList<Waiter> al;
+	private ArrayList<FileReceiver> al_file;
 	private int count; // count how many times people logged.
 	private int port;
 	private int filePort;

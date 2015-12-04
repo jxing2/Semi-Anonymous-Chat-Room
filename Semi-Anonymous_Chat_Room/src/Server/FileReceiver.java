@@ -20,7 +20,6 @@ public class FileReceiver extends Thread {
 	}
 
 	public FileReceiver(String fileName, File sharedDir, long size, ServerSocket fileServer) {
-		// TODO Auto-generated constructor stub
 		this.fileName = fileName;
 		this.sharedDir = sharedDir;
 		this.size = size;
@@ -70,9 +69,6 @@ public class FileReceiver extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        //判断文件接收是不是完整的
-		// Socket s = waiter.server.accept();
-		// serversock.accept();
 
 	}
 

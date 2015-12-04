@@ -29,6 +29,8 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import Client.CommandType;
+
 
 public class Waiter extends Thread {
 	public ObjectOutputStream output;
@@ -217,6 +219,9 @@ public class Waiter extends Thread {
 			case SendRequestReply_Alert:
 				output.writeObject("@11" + message);
 			 	break;
+			case DownloadRequestReply_Success:
+				output.writeObject("@12" + message);
+				break;
 			default:
 				return;
 			}
@@ -255,6 +260,9 @@ public class Waiter extends Thread {
 						"yyyy/MM/dd hh:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				message = String.valueOf(input.readObject());
+				for(int i =0; i < al_send.size();i++){
+					System.out.println(al_send.get(i));
+				}
 				// System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
@@ -308,7 +316,8 @@ public class Waiter extends Thread {
 					validate(m.message);
 					break;
 				case 5://download file request
-					
+					sendMessage(shareFileDir,ServerCommand.DownloadRequestReply_Success);
+					System.out.println("Waiter case 5 = "+shareFileDir);
 					break;
 				}
 				// System.out.println(message);
