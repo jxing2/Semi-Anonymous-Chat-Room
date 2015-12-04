@@ -71,7 +71,7 @@ public class DownloadWindow extends JFrame {
 					    	savePath = fileChooser.getSelectedFile().getAbsolutePath();
 					    	dispose();
 					    	System.out.println(savePath);
-					    	Download saving = new Download();
+					    	Download saving = new Download(savePath);
 					    	saving.start();
 					    }
 					}
