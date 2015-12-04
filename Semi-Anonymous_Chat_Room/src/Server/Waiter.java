@@ -222,9 +222,13 @@ public class Waiter extends Thread {
 			case DownloadRequestReply_Success:
 				output.writeObject("@12" + message);
 				break;
+			case FileListRequestReply:
+				output.writeObject("@13" + message);
+				break;
 			default:
 				return;
 			}
+			System.out.println(message);
 			output.flush();
 		} catch (IOException ie) {
 			flag = false;
@@ -316,12 +320,21 @@ public class Waiter extends Thread {
 					validate(m.message);
 					break;
 				case 5://download file request
-					sharedFileDir = sharedDir.getAbsolutePath();
-					sendMessage(sharedFileDir,ServerCommand.DownloadRequestReply_Success);
-					System.out.println("Waiter case 5 = "+ sharedFileDir);
+					//sendMessage(sharedFileDir,ServerCommand.DownloadRequestReply_Success);					
 					break;
 				case 6://File list request
-					//sendMessage(sharedFileDir,ServerCommand.FileListRequestReply);
+					sharedFileDir = sharedDir.getName();
+					File[] fileList = sharedDir.listFiles();
+					String tmp="";
+					for ( int i =0; i < fileList.length; i++){
+						if(fileList[i].isFile())
+							tmp += fileList[i].getName() ;
+						else
+							continue;
+						if(i<fileList.length-1)
+							tmp+="\n";
+					}
+					sendMessage(tmp,ServerCommand.FileListRequestReply);
 					break;
 				}
 				// System.out.println(message);

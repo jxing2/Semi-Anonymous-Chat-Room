@@ -27,6 +27,7 @@ import java.net.*;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Client extends JFrame {
@@ -43,6 +44,7 @@ public class Client extends JFrame {
 	private String realName;
 	private Document doc;
 	private UserType type;
+	private ArrayList<Send> al_send; 
 	JMenuBar bar;
 	Sign_Up sign_up;
 	Sign_In login;
@@ -57,6 +59,7 @@ public class Client extends JFrame {
 	public Client() {
 		super("Client");
 		readXML();
+		al_send = new ArrayList<Send>();
 		j_input = new JTextField();
 		ableToType(false);
 		j_input.addActionListener(new ActionListener() {
@@ -170,7 +173,8 @@ public class Client extends JFrame {
 
 	private void downloadFile() {
 		// TODO Auto-generated method stub
-		sendMessage("request downloading",CommandType.DownloadFileRequest);
+		downloadWindow = new DownloadWindow(this);
+		sendMessage("request downloading",CommandType.FileListRequest);
 		//downloadWindow = new DownloadWindow(this, "fileDir");
 	}
 
@@ -298,7 +302,7 @@ public class Client extends JFrame {
 			try {
 				j_public.setCaretPosition(j_public.getDocument().getLength());
 				message = String.valueOf(input.readObject());
-				//System.out.println(message);
+				System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0:
@@ -356,15 +360,17 @@ public class Client extends JFrame {
 					showNotification(m.message);
 					break;
 				case 10://SendRequestReply_Success
-					JOptionPane.showMessageDialog(chooserWindow, "Sending File:"+m.message);
-					//Socket fileSocket = new Socket(IP, filePort); //connect to server
+					
 					SendFile(m.message, filePort, IP);
 					break;
 				case 11:
 					break;
 				case 12://download request reply success
-					downloadWindow = new DownloadWindow(this,m.message);
-					System.out.println("Client= "+m.message);
+					//System.out.println("Client= "+m.message);
+					//downloadFile();
+					break;
+				case 13:
+					handleList(m.message);
 					break;
 				default:
 					return;
@@ -375,17 +381,27 @@ public class Client extends JFrame {
 		} while (true);
 	}
 
-	private void downloadFile(String downloadFilePath, int filePort, String iP) {
+	private void handleList(String message) {
+		// TODO Auto-generated method stub
+		String[] fileList = message.split("\n");
+		for(int i = 0 ; i < fileList.length; ++i)
+			System.out.println(fileList[i]);
+		if(downloadWindow!=null)
+		{
+			downloadWindow.reloadFileList(fileList);
+		}
+	}
+
+	private void downloadFile(String savePath, int filePort) {
 		// TODO Auto-generated method stub
 		//sendMessage("",CommandType.DownloadFileRequest);
 	}
 
 	private void SendFile(String filePath, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		System.out.println(IP+":"+filePort+":"+filePath);
 		Send send = new Send(filePath, filePort, IP);
 		send.start();
-		//al_send.add(send);
+		al_send.add(send);
 	}
 
 	private Message handleMessage(String message) {
@@ -438,6 +454,7 @@ public class Client extends JFrame {
 				return;// do nothing
 			}
 			output.writeObject(tmp);
+			System.out.println(tmp);
 			output.flush();
 		} catch (IOException ie) {
 			ie.printStackTrace();

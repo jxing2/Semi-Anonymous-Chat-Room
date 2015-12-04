@@ -1,6 +1,9 @@
 package Client;
 
 import javax.swing.*;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
 
 import java.awt.*;
@@ -16,7 +19,7 @@ public class DownloadWindow extends JFrame {
 	private Container c;
 	private Client parent;
 	private String savePath;
-	private String fileDir;
+	private String fileToSave;
 	private int upperMargin=20;
 	private int interval = 20;
 	private int leftMargin=30;
@@ -24,22 +27,17 @@ public class DownloadWindow extends JFrame {
 	private int sizeX = 400, sizeY = 400;//window size
 	private JTree tree;
 	private File folder;
-	public DownloadWindow(final Client parent, String fileDir) {
+	DefaultMutableTreeNode selectedNode;
+	DefaultMutableTreeNode top = new DefaultMutableTreeNode("Share");
+	public DownloadWindow(final Client parent) {
 		//tree = new TreeViewer(fileDir);
 		this.parent = parent;
-		this.fileDir = fileDir;
-		System.out.println("fileDir="+fileDir);
-		
-		folder = new File(fileDir);
-		File[] listOfFiles = folder.listFiles();
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode(fileDir);
-		tree = new JTree(top);
 //		for (int i = 0; i < listOfFiles.length; i++) {
 //			top.add(new DefaultMutableTreeNode(listOfFiles[i].getName()));
 //		}
 		c = getContentPane();
 		c.setLayout(null);
-		
+		tree = new JTree(top);
 		jsp = new JScrollPane(tree);
 		jsp.setBounds(leftMargin, upperMargin, width, 300);
 		download = new JButton("Download");
@@ -50,6 +48,7 @@ public class DownloadWindow extends JFrame {
 		c.add(download);
 		c.add(cancel);
 		c.add(jsp);
+		//c.add(tree);
 		setSize(sizeX,sizeY);
 		setResizable(false);
 		Client.centreWindow(this);
@@ -84,5 +83,27 @@ public class DownloadWindow extends JFrame {
 						dispose();
 					}
 				});
+		tree.addTreeSelectionListener(new treeSelectionListener());
+	}
+	public void reloadFileList(String[] fileList)
+	{
+		//top = new DefaultMutableTreeNode("Share");
+		for (int i = 0; i < fileList.length; i++) {
+			top.add(new DefaultMutableTreeNode(fileList[i]));
+		}
+		tree.expandRow(0);
+		//tree = new JTree(top);
+	}
+	class treeSelectionListener implements TreeSelectionListener
+	{
+
+		public void valueChanged(TreeSelectionEvent e) {
+			// TODO Auto-generated method stub
+			selectedNode = (DefaultMutableTreeNode)
+                    tree.getLastSelectedPathComponent();
+			//fileToSave = selectedNode.getUserObject().toString();
+			//System.out.println(selectedNode.getUserObject().toString());
+		}
+		
 	}
 }
