@@ -23,6 +23,7 @@ public class TableInfo extends AbstractTableModel {
 			row.add(0);
 			data.add(row);
 		}
+		
 	}
 	public void update(ArrayList<Send> al_sr)
 	{
@@ -41,6 +42,9 @@ public class TableInfo extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return data.size();
 	}
+	 public String getColumnName(int col) {
+	      return columnNames[col];
+	    }
 
 	public int getColumnCount() {
 		// TODO Auto-generated method stub

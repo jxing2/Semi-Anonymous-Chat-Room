@@ -29,7 +29,12 @@ public class StatusWindow extends JFrame{
                 "Does nothing");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 		table_upload = new JTable(downloadTable);
-		panel1.add(table_download);
+		JScrollPane scrollPane = new JScrollPane(table_upload);
+		table_upload.setFillsViewportHeight(true);
+		table_upload.setPreferredSize(new Dimension(400, 520));
+		panel1.add(scrollPane);
+		
+		
 		
 		JComponent panel2 = makePanel();
 		tabbedPane.addTab("Uploading", null, panel2,

@@ -54,14 +54,12 @@ public class FileReceiver extends Thread {
 			FileOutputStream fos = new FileOutputStream(file.getPath());
 			byte[] buf = new byte[10240];
 			int len = 0;
-			do{
 			while ((len = input.read(buf)) != -1) {
 				fos.write(buf, 0, len);
 				System.out.println(len);
 				receivedSize+=len;
 				fos.flush();
 			}
-			}while(receivedSize<size);
 			fos.close();
 			input.close();
 			s.close();
