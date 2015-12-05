@@ -58,7 +58,14 @@ public class ChooserWindow extends JFrame {
 							fileName = fileChooser.getSelectedFile().getName();
 
 							filePath = fileChooser.getSelectedFile().getAbsolutePath();
+							File file = new File(filePath);
+							size = file.length();
+							if(size == 0){
+								JOptionPane.showMessageDialog(pane, "The selected file is empty!");
+							}
+							else{
 							checkField.setText(filePath);
+							}
 						}
 					}
 
@@ -76,14 +83,12 @@ public class ChooserWindow extends JFrame {
 						if (checkField.getText().trim().equals("")) {
 							return;
 						}
-						File file = new File(filePath);
-						size = file.length();
-						if (size == 0) {
-							JOptionPane.showMessageDialog(parent, "The selected file is empty!");
-						} else {
+						//File file = new File(filePath);
+						//size = file.length();
+						
 							parent.sendMessage(fileName + "\n" + size + "\n" + filePath, CommandType.SendFileRequest);
 							dispose();
-						}
+						
 					}
 				});
 	}
