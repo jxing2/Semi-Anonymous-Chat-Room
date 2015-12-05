@@ -337,7 +337,9 @@ public class Waiter extends Thread {
 		for (int i = 0; i < filelist.length; i++) {
 			if (fileToSend == filelist[i].getName()) {
 				fileToSend = filelist[i].getPath();
-				FileSender fs = new FileSender(fileToSend, filePort, fileServer);
+				File file = new File(fileToSend);
+				long size = file.length();
+				FileSender fs = new FileSender(fileToSend, size, filePort, fileServer);
 				fs.start();
 				sendMessage(savePath, ServerCommand.DownloadRequestReply_Success);
 			}

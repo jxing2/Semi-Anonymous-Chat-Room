@@ -20,11 +20,12 @@ public class FileSender extends Thread {
 	ObjectInputStream input;
 	BufferedInputStream bis;
 	File fileToSend;
-	
-	public FileSender(String filePath, int fileport, ServerSocket fileServer){
+	long size;
+	public FileSender(String filePath,long size, int fileport, ServerSocket fileServer){
 		this.filePath = filePath;
 		this.fileport = fileport;
 		this.fileServer = fileServer;
+		this.size = size;
 	}
 	private void waitForConnection(ServerSocket fileServer) {
 		try {
