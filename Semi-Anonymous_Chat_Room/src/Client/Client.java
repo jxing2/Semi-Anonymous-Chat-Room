@@ -74,6 +74,8 @@ public class Client extends JFrame {
 		readXML();							//read XML file
 		al_send = new ArrayList<Send>();
 		al_download = new ArrayList<Download>();
+		
+		//text field on chat room
 		j_input = new JTextField();
 		ableToType(false);
 		j_input.addActionListener(new ActionListener() {
@@ -86,7 +88,8 @@ public class Client extends JFrame {
 		j_input.setFont(inputFont);
 		add(j_input, BorderLayout.SOUTH);
 		// ----------------------------------------
-
+		
+		//chat history on chat room
 		j_public = new JTextPane();
 		j_public.setEditable(false);
 		add(jsp = new JScrollPane(j_public), BorderLayout.CENTER);
@@ -320,10 +323,10 @@ public class Client extends JFrame {
 				System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
-				case 0:
+				case 0: 
 					showMessage(m.message, UserType.Student);
 					break;
-				case 1:
+				case 1:	
 					JOptionPane.showMessageDialog(sign_up, m.message);
 					if (sign_up != null)
 						sign_up.clear();
