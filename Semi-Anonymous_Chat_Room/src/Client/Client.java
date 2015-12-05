@@ -405,7 +405,7 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		String[] tmp = message.split("n");
 		String filePath = tmp[0];
-		long size = Integer.parseInt(tmp[2]);
+		long size = Integer.parseInt(tmp[1]);
 		Send send = new Send(filePath, filePort, IP, size);
 		send.start();
 		al_send.add(send);

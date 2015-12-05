@@ -17,6 +17,7 @@ public class StatusWindow extends JFrame{
 	ArrayList<Send> al_send;
 	ArrayList<Download> al_download;
 	TableInfo downloadTable, upLoadTable, doneTable;
+	JTable table_download, table_upload, table_done;
 	public StatusWindow(ArrayList<Send> al_send, ArrayList<Download> al_download)
 	{
 		this.al_send = al_send;
@@ -26,6 +27,9 @@ public class StatusWindow extends JFrame{
 		tabbedPane.addTab("Downloading", null, panel1,
                 "Does nothing");
 		tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+		table_upload = new JTable(downloadTable);
+		panel1.add(table_download);
+		
 		JComponent panel2 = makePanel();
 		tabbedPane.addTab("Uploading", null, panel2,
                 "Does nothing");
@@ -56,13 +60,14 @@ public class StatusWindow extends JFrame{
     protected void makeTable() {
     	//download 
     	//al_download
-    	JTable table1 = new JTable();
+    	
+    	
     	//upload
-    	String[] columnNames = {"File Name","","Process"};
-    	Object[][] data = new Object[al_send.size()][3];
-    	JTable table = new JTable(data, columnNames);
-    	table.setPreferredScrollableViewportSize(new Dimension(500, 70));
-        table.setFillsViewportHeight(true);
+//    	String[] columnNames = {"File Name","","Process"};
+//    	Object[][] data = new Object[al_send.size()][3];
+//    	JTable table = new JTable(data, columnNames);
+//    	table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+//      table.setFillsViewportHeight(true);
 
     	
         return;
