@@ -27,7 +27,7 @@ public class DownloadWindow extends JFrame {
 	private int interval = 20;
 	private int leftMargin=30;
 	private int width = 340;
-	private int sizeX = 400, sizeY = 400;//window size
+	private int sizeX = 400, sizeY = 424;//window size
 	private JTree tree;
 	private File folder;
 	DefaultMutableTreeNode selectedNode;
