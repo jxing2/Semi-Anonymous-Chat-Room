@@ -1,6 +1,6 @@
 package Client;
 
-public class Download extends Thread{
+public class Download extends Thread implements SendAndReceive{
 	private String savePath;
 	public String fileName;
 	public int getPercentage()
