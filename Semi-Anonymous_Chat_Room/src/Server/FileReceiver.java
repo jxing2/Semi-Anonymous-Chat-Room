@@ -37,8 +37,6 @@ public class FileReceiver extends Thread {
 
 	private void setupStreams() {
 		try {
-			output = new ObjectOutputStream(s.getOutputStream());
-			output.flush();
 			input = new ObjectInputStream(s.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

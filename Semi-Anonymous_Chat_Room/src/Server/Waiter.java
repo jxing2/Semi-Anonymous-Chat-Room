@@ -356,7 +356,7 @@ public class Waiter extends Thread {
 		if (fr.test()) {
 			fr.start();
 			sendMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
-		} // System.out.println(message);
+		} 
 		else {
 			sendMessage("Not ready!", ServerCommand.SendRequestReply_Alert);
 			return;

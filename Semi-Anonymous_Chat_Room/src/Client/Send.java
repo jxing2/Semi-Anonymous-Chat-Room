@@ -36,13 +36,12 @@ public class Send extends Thread{
 			socket = new Socket(IP, filePort);
 			os = new ObjectOutputStream(socket.getOutputStream());
 			fis = new FileInputStream(file);
-			int len = 0;  
-	        while ((len = fis.read(buf)) != -1) {  
-	            os.write(buf, 0, len);  
+			int len = 0;
+	        while ((len = fis.read(buf)) != -1) {
+	            os.write(buf, 0, len);
 	            sendByte+=len;
 	            os.flush();
-	        } 
-	        //os.flush();
+	        }
 	        fis.close();
 	        os.close();
 		} catch (IOException e) {
