@@ -320,6 +320,7 @@ public class Waiter extends Thread {
 					validate(m.message);
 					break;
 				case 5://download file request
+					locateFile(m.message);
 					//sendMessage(sharedFileDir,ServerCommand.DownloadRequestReply_Success);					
 					break;
 				case 6://File list request
@@ -350,8 +351,15 @@ public class Waiter extends Thread {
 		} while (flag);
 	}
 
-	private void validate(String message) {
+	private void locateFile(String message) {
 		// TODO Auto-generated method stub
+		String fileToSend = message;
+		
+		FileSender fs = new FileSender(fileToSend, filePort, fileServer);
+		fs.start();
+	}
+
+	private void validate(String message) {
 		String[] tmp = message.split("\n");
 		String fileName = tmp[0];
 		long size = Integer.parseInt(tmp[1]);

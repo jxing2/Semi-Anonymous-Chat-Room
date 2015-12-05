@@ -7,7 +7,7 @@ public class Send extends Thread {
 	private Socket socket;
 	private int filePort;
 	private String filePath;
-	private BufferedOutputStream outToServer;
+	//private BufferedOutputStream outToServer;
 	private String IP;
 	FileInputStream fis;
 	ObjectOutputStream os;
