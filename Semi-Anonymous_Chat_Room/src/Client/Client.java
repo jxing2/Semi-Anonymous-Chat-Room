@@ -1,4 +1,11 @@
 package Client;
+/**
+@author: Jinghao Xing
+@author: Xiaoyu Fan
+@author: Xi Li
+Client user interface
+
+*/
 
 import java.io.*;
 
