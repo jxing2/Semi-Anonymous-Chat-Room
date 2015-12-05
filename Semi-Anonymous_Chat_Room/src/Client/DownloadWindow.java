@@ -19,6 +19,9 @@ public class DownloadWindow extends JFrame {
 	private Container c;
 	private Client parent;
 	private String savePath;
+	public String getSavePath() {
+		return savePath;
+	}
 	private String fileToSave;
 	private int upperMargin=20;
 	private int interval = 20;
@@ -73,8 +76,6 @@ public class DownloadWindow extends JFrame {
 					    	parent.sendMessage(fileToSave, CommandType.DownloadFileRequest);
 					    	dispose();
 					    	System.out.println(savePath);
-//					    	Download saving = new Download(savePath);
-//					    	saving.start();
 					    }
 					}
 				});	

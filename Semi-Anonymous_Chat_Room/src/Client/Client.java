@@ -366,8 +366,7 @@ public class Client extends JFrame {
 				case 11:
 					break;
 				case 12://download request reply success
-					//System.out.println("Client= "+m.message);
-					//downloadFile(m.message, filePort);
+					downloadFile(filePort, IP);
 					break;
 				case 13:
 					handleList(m.message);
@@ -392,9 +391,10 @@ public class Client extends JFrame {
 		}
 	}
 
-	private void downloadFile(String fileName, int filePort) {
+	private void downloadFile(int filePort, String IP) {
 		// TODO Auto-generated method stub
-		//sendMessage("",CommandType.DownloadFileRequest);
+		Download download = new Download(downloadWindow.getSavePath());
+		download.start();
 	}
 
 	private void SendFile(String filePath, int filePort, String IP) {
