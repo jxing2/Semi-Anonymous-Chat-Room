@@ -73,7 +73,7 @@ public class DownloadWindow extends JFrame {
 						int returnVal = fileChooser.showSaveDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
 					    	savePath = fileChooser.getSelectedFile().getAbsolutePath();
-					    	parent.sendMessage(fileToSave, CommandType.DownloadFileRequest);
+					    	parent.sendMessage(fileToSave + "\n" +savePath, CommandType.DownloadFileRequest);
 					    	dispose();
 					    	System.out.println(savePath);
 					    }

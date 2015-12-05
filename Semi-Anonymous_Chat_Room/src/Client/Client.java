@@ -400,9 +400,12 @@ public class Client extends JFrame {
 		download.start();
 	}
 
-	private void SendFile(String filePath, int filePort, String IP) {
+	private void SendFile(String message, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		Send send = new Send(filePath, filePort, IP);
+		String[] tmp = message.split("n");
+		String filePath = tmp[0];
+		long size = Integer.parseInt(tmp[2]);
+		Send send = new Send(filePath, filePort, IP, size);
 		send.start();
 		al_send.add(send);
 	}

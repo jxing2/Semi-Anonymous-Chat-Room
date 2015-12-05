@@ -330,14 +330,16 @@ public class Waiter extends Thread {
 
 	private void locateFile(String message) {
 		// TODO Auto-generated method stub
-		String fileToSend;
+		String[] tmp = message.split("\n");
+		String fileToSend = tmp[0];
+		String savePath = tmp[1];
 		File[] filelist = sharedDir.listFiles();
 		for (int i = 0; i < filelist.length; i++) {
-			if (message == filelist[i].getName()) {
+			if (fileToSend == filelist[i].getName()) {
 				fileToSend = filelist[i].getPath();
 				FileSender fs = new FileSender(fileToSend, filePort, fileServer);
 				fs.start();
-				sendMessage(fileToSend, ServerCommand.DownloadRequestReply_Success);
+				sendMessage(savePath, ServerCommand.DownloadRequestReply_Success);
 			}
 		}	
 	}
@@ -351,7 +353,7 @@ public class Waiter extends Thread {
 
 		if (fr.test()) {
 			fr.start();
-			sendMessage(filePath, ServerCommand.SendRequestReply_Success);
+			sendMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
 		} // System.out.println(message);
 		else {
 			sendMessage("Not ready!", ServerCommand.SendRequestReply_Alert);
