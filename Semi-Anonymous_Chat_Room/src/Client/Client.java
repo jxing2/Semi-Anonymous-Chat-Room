@@ -4,7 +4,6 @@ package Client;
 @author: Xiaoyu Fan
 @author: Xi Li
 Client user interface
-
 */
 
 import java.io.*;
@@ -39,13 +38,13 @@ import java.util.Calendar;
 
 public class Client extends JFrame {
 
-	private JTextField j_input;
-	private JTextPane j_public;
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
+	private JTextField j_input;				//text field on chat room
+	private JTextPane j_public;				//chat history on chat room
+	private ObjectOutputStream output;		//to write on the socket
+	private ObjectInputStream input;		//to read from the socket
 	private Socket sock;
 	//private String message = "";
-	private String IP;// host
+	private String IP;						// host
 	private int port;
 	private int filePort;
 	private String realName;
@@ -54,22 +53,25 @@ public class Client extends JFrame {
 	private ArrayList<Send> al_send; 
 	private ArrayList<Download> al_download;
 	//private ArrayList<Download>
-	JMenuBar bar;
+	JMenuBar bar;							//menu
+	JMenuItem signIn;
 	Sign_Up sign_up;
 	Sign_In login;
 	StatusWindow statusWindow;
 	Change_PWD chang_PWD;
 	ChooserWindow chooserWindow;
 	DownloadWindow downloadWindow;
-	JScrollPane jsp;
-	JMenuItem signIn;
+	JScrollPane jsp;						//Scroll Panel of chat history
+
 	
 	private boolean isLogined = false;
 	Font inputFont ;
 	private int fontSize = 19;
+	
+	//Constructor
 	public Client() {
 		super("Client");
-		readXML();
+		readXML();							//read XML file
 		al_send = new ArrayList<Send>();
 		al_download = new ArrayList<Download>();
 		j_input = new JTextField();
@@ -95,7 +97,8 @@ public class Client extends JFrame {
 				System.exit(0);
 			}
 		});
-
+		
+		// Menu with 6 Buttons
 		bar = new JMenuBar();
 		signIn = new JMenuItem("Login");
 		JMenuItem signUp = new JMenuItem("Sign up");
