@@ -37,7 +37,6 @@ public class Send extends Thread{
 			os = new ObjectOutputStream(socket.getOutputStream());
 			fis = new FileInputStream(file);
 			int len = 0;  
-			System.out.println("ready");
 	        while ((len = fis.read(buf)) != -1) {  
 	            os.write(buf, 0, len);  
 	            sendByte+=len;

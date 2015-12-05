@@ -20,6 +20,7 @@ public class StatusWindow extends JFrame{
 	JTable table_download, table_upload, table_done;
 	public StatusWindow(ArrayList<Send> al_send, ArrayList<Download> al_download)
 	{
+		System.out.println(al_send.size());
 		this.al_send = al_send;
 		this.al_download = al_download;
 		downloadTable = new TableInfo(al_send);
