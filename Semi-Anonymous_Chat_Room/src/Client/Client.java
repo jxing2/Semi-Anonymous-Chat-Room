@@ -403,7 +403,7 @@ public class Client extends JFrame {
 
 	private void SendFile(String message, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		String[] tmp = message.split("n");
+		String[] tmp = message.split("\n");
 		String filePath = tmp[0];
 		long size = Integer.parseInt(tmp[1]);
 		Send send = new Send(filePath, filePort, IP, size);
