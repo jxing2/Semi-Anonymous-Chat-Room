@@ -64,6 +64,7 @@ public class Client extends JFrame {
 		super("Client");
 		readXML();
 		al_send = new ArrayList<Send>();
+		al_download = new ArrayList<Download>();
 		j_input = new JTextField();
 		ableToType(false);
 		j_input.addActionListener(new ActionListener() {
