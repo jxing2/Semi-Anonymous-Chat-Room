@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Download extends Thread implements SendAndReceive{
+public class Download extends Thread{
 	private String savePath;
 	private Socket s;
 	private int filePort;
