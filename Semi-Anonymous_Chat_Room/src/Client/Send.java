@@ -12,13 +12,18 @@ public class Send extends Thread {
 	FileInputStream fis;
 	ObjectOutputStream os;
 	BufferedInputStream bis;
-	public Send (String filePath, int filePort, String IP){
+	private long sendByte,totalByte;
+	public Send (String filePath, int filePort, String IP, long totalByte){
 		this.filePath = filePath;
 		this.filePort = filePort;
 		this.IP = IP;
+		this.totalByte = totalByte;
 	}
-
 	
+	public int getPercentage()
+	{
+		return (int)(((double)sendByte)/totalByte*100);
+	}
 	public void run(){
 		
 		try {
@@ -32,7 +37,7 @@ public class Send extends Thread {
 			System.out.println("ready");
 	        while ((len = fis.read(buf)) != -1) {  
 	            os.write(buf, 0, len);  
-	            System.out.println(len);
+	            sendByte+=len;
 	            os.flush();
 	        } 
 	        //os.flush();
