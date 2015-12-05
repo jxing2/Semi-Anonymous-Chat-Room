@@ -50,7 +50,7 @@ public class FileReceiver extends Thread {
 
 		try {
 			FileOutputStream fos = new FileOutputStream(file.getPath());
-			byte[] buf = new byte[10240];
+			byte[] buf = new byte[2048];
 			int len = 0;
 			while ((len = input.read(buf)) != -1) {
 				fos.write(buf, 0, len);

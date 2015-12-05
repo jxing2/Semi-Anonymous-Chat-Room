@@ -50,7 +50,7 @@ public class FileSender extends Thread {
 		setupStreams();
 		
 		try {
-			int bufferSize = 10240;
+			int bufferSize = 2048;
 			byte[] buf = new byte[bufferSize];
 			fileToSend = new File(filePath);
 			System.out.println(filePath);
