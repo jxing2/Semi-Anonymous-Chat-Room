@@ -3,7 +3,7 @@ package Client;
 import java.io.*;
 import java.net.*;
 
-public class Send extends Thread implements SendAndReceive{
+public class Send extends Thread{
 	private Socket socket;
 	private int filePort;
 	private String filePath;
