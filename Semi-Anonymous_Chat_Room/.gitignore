@@ -1,7 +1,8 @@
 Semi-Anonymous_Chat_Room/bin
 Semi-Anonymous_Chat_Room/Log
 Semi-Anonymous_Chat_Room/Share
-./bin/*.class
+./bin/Client/*.class
+./bin/Server/*.class
 ./Log
 ./Share
 /bin
