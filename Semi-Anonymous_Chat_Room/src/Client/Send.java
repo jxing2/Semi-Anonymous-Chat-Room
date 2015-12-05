@@ -13,6 +13,8 @@ public class Send extends Thread{
 	ObjectOutputStream os;
 	BufferedInputStream bis;
 	private long sendByte,totalByte;
+	private long lastSentByte;
+	
 	public String fileName;
 	public Send (String filePath, int filePort, String IP, long totalByte){
 		File file = new File(filePath);
@@ -21,6 +23,12 @@ public class Send extends Thread{
 		this.filePort = filePort;
 		this.IP = IP;
 		this.totalByte = totalByte;
+	}
+	public long getLastSentByte() {
+		return lastSentByte;
+	}
+	public void setLastSentByte(long lastSentByte) {
+		this.lastSentByte = lastSentByte;
 	}
 	public long getSendByte() {
 		return sendByte;
@@ -32,7 +40,7 @@ public class Send extends Thread{
 	public void run(){
 		
 		try {
-			int bufferSize = 10240;
+			int bufferSize = 2048;
 			byte[] buf = new byte[bufferSize];
 			File file = new File(filePath);
 			socket = new Socket(IP, filePort);

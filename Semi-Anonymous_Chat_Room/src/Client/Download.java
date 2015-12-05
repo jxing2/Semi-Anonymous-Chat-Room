@@ -20,12 +20,25 @@ public class Download extends Thread{
 	{
 		return (int)(((double)sendByte)/totalByte*100);
 	}
+	private long lastSendByte;
+	public long getLastSendByte() {
+		return lastSendByte;
+	}
+
+	public void setLastSendByte(long lastSendByte) {
+		this.lastSendByte = lastSendByte;
+	}
+
+	public long getSendByte() {
+		return sendByte;
+	}
 	private long sendByte;
 	private long totalByte;
-	public Download(String savePath, String IP, int filePort){
+	public Download(String savePath, String IP, int filePort, long totalByte){
 		this.savePath = savePath;
 		this.IP = IP;
 		this.filePort = filePort;
+		this.totalByte = totalByte;
 	}
 	
 	private void setupStreams() {
@@ -39,14 +52,13 @@ public class Download extends Thread{
 	}
 	
 	public void run(){
-		
 		setupStreams();
 		try {
 			
 			File file = new File(savePath);
 			
 			FileOutputStream fos = new FileOutputStream(file.getPath());
-			byte[] buf = new byte[10240];
+			byte[] buf = new byte[2048];
 			int len = 0;
 			
 			while ((len = input.read(buf)) != -1) {

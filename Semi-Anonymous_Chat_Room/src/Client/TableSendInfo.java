@@ -15,6 +15,7 @@ public class TableSendInfo extends AbstractTableModel {
 	ArrayList<ArrayList<Object>> data;
 	int col = 3;
 	ArrayList<Send> al_sr;
+	Send send;
 	public TableSendInfo(ArrayList<Send> al_sr) {
 		data = new ArrayList<ArrayList<Object>>();
 		this.al_sr = al_sr;
@@ -28,11 +29,15 @@ public class TableSendInfo extends AbstractTableModel {
 		for (int i = 0; i < al_sr.size(); ++i) {
 			if(al_sr.get(i).getPercentage()==100)
 				continue;
+			send = al_sr.get(i);
 			row = new ArrayList<Object>();
-			row.add(al_sr.get(i).fileName);
+			row.add(send.fileName);
 			//row.add(new JProgressBar(0, 0, 100));
-			row.add(al_sr.get(i).getPercentage());
-			row.add(Math.random()*1000);
+			row.add(send.getPercentage());
+			long sendByte = send.getSendByte();
+			long lastSendByte = send.getLastSentByte();
+			send.setLastSentByte(sendByte);
+			row.add((sendByte-lastSendByte)*2/1024);
 			data.add(row);
 		}
 	}
