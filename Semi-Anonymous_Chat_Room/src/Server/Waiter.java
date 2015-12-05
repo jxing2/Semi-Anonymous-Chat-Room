@@ -331,21 +331,21 @@ public class Waiter extends Thread {
 	private void locateFile(String message) {
 		// TODO Auto-generated method stub
 		String[] tmp = message.split("\n");
-		String fileToSend = tmp[0];
+		String fileName = tmp[0];
 		String savePath = tmp[1];
 		File[] filelist = sharedDir.listFiles();
+
 		for (int i = 0; i < filelist.length; i++) {
-			if (fileToSend == filelist[i].getName()) {
-				fileToSend = filelist[i].getPath();
-				File file = new File(fileToSend);
-				long size = file.length();
-				FileSender fs = new FileSender(fileToSend, size, filePort, fileServer);
+
+			if (fileName.equals(filelist[i].getName())) {
+				File fileToSend = new File(filelist[i].getPath());
+				long size = fileToSend.length();
+				FileSender fs = new FileSender(filelist[i].getPath(), size, filePort, fileServer);
 				fs.start();
 				sendMessage(savePath, ServerCommand.DownloadRequestReply_Success);
 			}
-		}	
+		}
 	}
-
 	private void validate(String message) {
 		String[] tmp = message.split("\n");
 		String fileName = tmp[0];

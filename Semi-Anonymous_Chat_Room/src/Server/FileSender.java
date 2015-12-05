@@ -15,17 +15,16 @@ public class FileSender extends Thread {
 	private ServerSocket fileServer;
 	private Socket s;
 	FileInputStream fis;
-	//ObjectOutputStream os;
 	ObjectOutputStream output;
 	ObjectInputStream input;
-	BufferedInputStream bis;
 	File fileToSend;
-	long size;
-	public FileSender(String filePath,long size, int fileport, ServerSocket fileServer){
+	long sendByte,totalByte;
+	
+	public FileSender(String filePath,long totalByte, int fileport, ServerSocket fileServer){
 		this.filePath = filePath;
 		this.fileport = fileport;
 		this.fileServer = fileServer;
-		this.size = size;
+		this.totalByte = totalByte;
 	}
 	private void waitForConnection(ServerSocket fileServer) {
 		try {
@@ -40,7 +39,7 @@ public class FileSender extends Thread {
 		try {
 			output = new ObjectOutputStream(s.getOutputStream());
 			output.flush();
-			input = new ObjectInputStream(s.getInputStream());
+			//input = new ObjectInputStream(s.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,6 +53,7 @@ public class FileSender extends Thread {
 			int bufferSize = 10240;
 			byte[] buf = new byte[bufferSize];
 			fileToSend = new File(filePath);
+			System.out.println(filePath);
 			//socket = new Socket(IP, filePort);
 			//output = new ObjectOutputStream(s.getOutputStream());
 			fis = new FileInputStream(fileToSend);
@@ -61,6 +61,7 @@ public class FileSender extends Thread {
 			System.out.println("ready");
 	        while ((len = fis.read(buf)) != -1) {  
 	            output.write(buf, 0, len);  
+	            sendByte += len;
 	            System.out.println(len);
 	            output.flush();
 	        } 

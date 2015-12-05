@@ -398,7 +398,7 @@ public class Client extends JFrame {
 
 	private void downloadFile(int filePort, String IP) {
 		// TODO Auto-generated method stub
-		Download download = new Download(downloadWindow.getSavePath());
+		Download download = new Download(downloadWindow.getSavePath(), IP, filePort);
 		download.start();
 	}
 
