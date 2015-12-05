@@ -3,6 +3,8 @@ package Client;
 import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
 
+
+import java.io.File;
 import java.util.*;
 
 public class TableSendInfo extends AbstractTableModel {
@@ -12,13 +14,16 @@ public class TableSendInfo extends AbstractTableModel {
 	// private Object[][] data = ...//same as before...
 	ArrayList<ArrayList<Object>> data;
 	int col = 3;
-
+	ArrayList<Send> al_sr;
 	public TableSendInfo(ArrayList<Send> al_sr) {
+		data = new ArrayList<ArrayList<Object>>();
+		this.al_sr = al_sr;
 		loadSend(al_sr);
 	}
 	private void loadSend(ArrayList<Send> al_sr)
 	{
-		data = new ArrayList<ArrayList<Object>>();
+		//data = new ArrayList<ArrayList<Object>>();
+		data.clear();
 		ArrayList<Object> row;
 		for (int i = 0; i < al_sr.size(); ++i) {
 			if(al_sr.get(i).getPercentage()==100)
@@ -27,11 +32,11 @@ public class TableSendInfo extends AbstractTableModel {
 			row.add(al_sr.get(i).fileName);
 			//row.add(new JProgressBar(0, 0, 100));
 			row.add(al_sr.get(i).getPercentage());
-			row.add(0);
+			row.add(Math.random()*1000);
 			data.add(row);
 		}
 	}
-	public void update(ArrayList<Send> al_sr)
+	public void update()
 	{
 		loadSend(al_sr);
 		fireTableDataChanged();
@@ -52,15 +57,13 @@ public class TableSendInfo extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		// TODO Auto-generated method stub
 		if(columnIndex==1)
-			return data.get(rowIndex).get(columnIndex)+" %";
+			return data.get(rowIndex).get(columnIndex);
 		if(columnIndex==2)
 			return data.get(rowIndex).get(columnIndex)+" KB/s";
 		return data.get(rowIndex).get(columnIndex);
 	}
 
 	public boolean isCellEditable(int row, int col) {
-		// Note that the data/cell address is constant,
-		// no matter where the cell appears onscreen.
 		return false;
 	}
 

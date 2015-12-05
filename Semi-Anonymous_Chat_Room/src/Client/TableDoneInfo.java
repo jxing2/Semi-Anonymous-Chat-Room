@@ -11,8 +11,11 @@ public class TableDoneInfo extends AbstractTableModel {
 	// private Object[][] data = ...//same as before...
 	ArrayList<Object> data;
 	int col = 1;
-
+	ArrayList<Send> al_sr;
+	ArrayList<Download> al_download;
 	public TableDoneInfo(ArrayList<Send> al_sr, ArrayList<Download> al_download) {
+		this.al_download = al_download;
+		this.al_sr = al_sr;
 		load(al_sr, al_download);
 	}
 
@@ -28,10 +31,9 @@ public class TableDoneInfo extends AbstractTableModel {
 				continue;
 			data.add(al_download.get(i).fileName);
 		}
-
 	}
 
-	public void update(ArrayList<Send> al_sr, ArrayList<Download> al_download) {
+	public void update() {
 		load(al_sr, al_download);
 		fireTableDataChanged();
 	}
