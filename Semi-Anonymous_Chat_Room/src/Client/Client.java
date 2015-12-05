@@ -378,7 +378,8 @@ public class Client extends JFrame {
 				case 11:
 					break;
 				case 12://download request reply success
-					downloadFile(filePort, IP);
+					
+					downloadFile(m.message, filePort, IP);
 					break;
 				case 13:
 					handleList(m.message);
@@ -403,9 +404,11 @@ public class Client extends JFrame {
 		}
 	}
 
-	private void downloadFile(int filePort, String IP) {
+	private void downloadFile(String message, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		Download download = new Download(downloadWindow.getSavePath(), IP, filePort);
+		String[] tmp = message.split("\n");
+		long totalSize = Integer.parseInt(tmp[1]);
+		Download download = new Download(downloadWindow.getSavePath(), IP, filePort, totalSize);
 		download.start();
 	}
 

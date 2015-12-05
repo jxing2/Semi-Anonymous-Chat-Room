@@ -342,7 +342,7 @@ public class Waiter extends Thread {
 				long size = fileToSend.length();
 				FileSender fs = new FileSender(filelist[i].getPath(), size, filePort, fileServer);
 				fs.start();
-				sendMessage(savePath, ServerCommand.DownloadRequestReply_Success);
+				sendMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
 			}
 		}
 	}
