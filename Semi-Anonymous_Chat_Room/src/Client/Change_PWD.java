@@ -3,6 +3,8 @@ package Client;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -87,6 +89,11 @@ public class Change_PWD extends JFrame {
 		again_pwd_txt.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				confirm();
+			}
+		});
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				close();
 			}
 		});
 		setSize(300, 500);

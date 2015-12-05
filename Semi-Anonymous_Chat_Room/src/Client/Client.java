@@ -45,14 +45,17 @@ public class Client extends JFrame {
 	private Document doc;
 	private UserType type;
 	private ArrayList<Send> al_send; 
+	//private ArrayList<Download>
 	JMenuBar bar;
 	Sign_Up sign_up;
 	Sign_In login;
+	StatusWindow statusWindow;
 	Change_PWD chang_PWD;
 	ChooserWindow chooserWindow;
 	DownloadWindow downloadWindow;
 	JScrollPane jsp;
 	JMenuItem signIn;
+	
 	private boolean isLogined = false;
 	Font inputFont ;
 	private int fontSize = 19;
@@ -157,7 +160,7 @@ public class Client extends JFrame {
 
 	protected void status() {
 		// TODO Auto-generated method stub
-		
+		statusWindow = new StatusWindow(al_send);
 	}
 
 	protected void changePWD() {
