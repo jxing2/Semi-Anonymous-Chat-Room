@@ -1,4 +1,4 @@
-package JTable;
+package Client;
 
 import javax.swing.*;
 
@@ -15,9 +15,13 @@ public class StatusWindow extends JFrame{
 	JTabbedPane tabbedPane = new JTabbedPane();
 	ArrayList<JTable> al_table = new ArrayList<JTable>();
 	ArrayList<Send> al_send;
-	public StatusWindow(ArrayList<Send> al_send)
+	ArrayList<Download> al_download;
+	TableInfo downloadTable, upLoadTable, doneTable;
+	public StatusWindow(ArrayList<Send> al_send, ArrayList<Download> al_download)
 	{
-		
+		this.al_send = al_send;
+		this.al_download = al_download;
+		downloadTable = new TableInfo(al_send);
 		JComponent panel1 = makePanel();
 		tabbedPane.addTab("Downloading", null, panel1,
                 "Does nothing");
@@ -47,16 +51,12 @@ public class StatusWindow extends JFrame{
 	}
     protected JComponent makePanel() {
         JPanel panel = new JPanel(true);
-//        JLabel filler = new JLabel(text);
-//        filler.setHorizontalAlignment(JLabel.CENTER);
-//        panel.setLayout(new GridLayout(1, 1));
-        //panel.add(filler);
         return panel;
     }
-    protected JComponent makeTable() {
+    protected void makeTable() {
     	//download 
-    	
-    	
+    	//al_download
+    	JTable table1 = new JTable();
     	//upload
     	String[] columnNames = {"File Name","","Process"};
     	Object[][] data = new Object[al_send.size()][3];
@@ -65,7 +65,7 @@ public class StatusWindow extends JFrame{
         table.setFillsViewportHeight(true);
 
     	
-        return panel;
+        return;
     }
 	protected void close() {
 		// TODO Auto-generated method stub

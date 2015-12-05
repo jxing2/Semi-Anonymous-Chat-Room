@@ -45,6 +45,7 @@ public class Client extends JFrame {
 	private Document doc;
 	private UserType type;
 	private ArrayList<Send> al_send; 
+	private ArrayList<Download> al_download;
 	//private ArrayList<Download>
 	JMenuBar bar;
 	Sign_Up sign_up;
@@ -160,7 +161,7 @@ public class Client extends JFrame {
 
 	protected void status() {
 		// TODO Auto-generated method stub
-		statusWindow = new StatusWindow(al_send);
+		statusWindow = new StatusWindow(al_send,al_download);
 	}
 
 	protected void changePWD() {
