@@ -22,7 +22,9 @@ public class Send extends Thread{
 		this.IP = IP;
 		this.totalByte = totalByte;
 	}
-	
+	public long getSendByte() {
+		return sendByte;
+	}
 	public int getPercentage()
 	{
 		return (int)(((double)sendByte)/totalByte*100);
