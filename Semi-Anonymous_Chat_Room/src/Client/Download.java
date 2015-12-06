@@ -18,6 +18,8 @@ public class Download extends Thread{
 	//ObjectOutputStream output;
 	public int getPercentage()
 	{
+		if(totalByte == 0)
+			return 100;
 		return (int)(((double)sendByte)/totalByte*100);
 	}
 	private long lastSendByte;
@@ -56,7 +58,7 @@ public class Download extends Thread{
 		try {
 			
 			File file = new File(savePath);
-			
+			fileName = file.getName();
 			FileOutputStream fos = new FileOutputStream(file.getPath());
 			byte[] buf = new byte[2048];
 			int len = 0;

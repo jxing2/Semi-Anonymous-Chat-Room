@@ -1,6 +1,5 @@
 package Client;
 
-import javax.swing.JProgressBar;
 import javax.swing.table.AbstractTableModel;
 
 import java.util.*;
@@ -13,23 +12,28 @@ public class TableDownloadInfo extends AbstractTableModel {
 	ArrayList<ArrayList<Object>> data;
 	int col = 3;
 	ArrayList<Download> al_download;
+	Download download;
 	public TableDownloadInfo(ArrayList<Download> al_download) {
 		// TODO Auto-generated constructor stub
+		data = new ArrayList<ArrayList<Object>>();
 		this.al_download = al_download;
 		loadDownload(al_download);
 	}
 	private void loadDownload(ArrayList<Download> al_sr)
 	{
-		data = new ArrayList<ArrayList<Object>>();
+		data.clear();
 		ArrayList<Object> row;
 		for (int i = 0; i < al_sr.size(); ++i) {
 			if(al_sr.get(i).getPercentage()==100)
 				continue;
 			row = new ArrayList<Object>();
 			row.add(al_sr.get(i).fileName);
-			//row.add(new JProgressBar(0, 0, 100));
 			row.add(al_sr.get(i).getPercentage());
-			row.add(0);
+			download = al_sr.get(i);
+			long sendByte = download.getSendByte();
+			long lastSendByte = download.getLastSendByte();
+			download.setLastSendByte(sendByte);
+			row.add((sendByte-lastSendByte)*2/1024);
 			data.add(row);
 		}
 	}

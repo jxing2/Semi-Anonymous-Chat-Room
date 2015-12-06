@@ -81,7 +81,6 @@ public class DownloadWindow extends JFrame {
 								download.doClick();
 							} else {
 								parent.sendMessage(fileToSave + "\n" + savePath, CommandType.DownloadFileRequest);
-								dispose();
 							}
 						}
 					}

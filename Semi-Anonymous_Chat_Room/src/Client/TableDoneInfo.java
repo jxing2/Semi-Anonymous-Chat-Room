@@ -14,13 +14,14 @@ public class TableDoneInfo extends AbstractTableModel {
 	ArrayList<Send> al_sr;
 	ArrayList<Download> al_download;
 	public TableDoneInfo(ArrayList<Send> al_sr, ArrayList<Download> al_download) {
+		data = new ArrayList<Object>();
 		this.al_download = al_download;
 		this.al_sr = al_sr;
 		load(al_sr, al_download);
 	}
 
 	private void load(ArrayList<Send> al_sr, ArrayList<Download> al_download) {
-		data = new ArrayList<Object>();
+		data.clear();
 		for (int i = 0; i < al_sr.size(); ++i) {
 			if (al_sr.get(i).getPercentage() != 100)
 				continue;

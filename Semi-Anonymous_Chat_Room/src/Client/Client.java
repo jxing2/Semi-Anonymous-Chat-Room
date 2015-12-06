@@ -415,7 +415,7 @@ public class Client extends JFrame {
 		// TODO Auto-generated method stub
 		String[] tmp = message.split("\n");
 		long totalSize = Integer.parseInt(tmp[1]);
-		Download download = new Download(downloadWindow.getSavePath(), IP, filePort, totalSize);
+		Download download = new Download(tmp[0], IP, filePort, totalSize);
 		download.start();
 		al_download.add(download);
 	}
