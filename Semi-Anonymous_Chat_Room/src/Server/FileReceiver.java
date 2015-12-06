@@ -3,6 +3,8 @@ package Server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FileReceiver extends Thread {
 	private String fileName;
@@ -15,24 +17,34 @@ public class FileReceiver extends Thread {
 	long receivedSize;
 	ObjectInputStream input;
 	ObjectOutputStream output;
+
 	public int getPercentage() {
 		return (int) ((double) receivedSize / size * 100);
 	}
 
-	public FileReceiver(String fileName, File sharedDir, long size, ServerSocket fileServer) {
+	private Lock connectionLock;
+	Waiter waiter;
+	String message;
+	ServerCommand command;
+
+	public FileReceiver(String fileName, File sharedDir, long size,
+			ServerSocket fileServer, Lock connectionLock, Waiter waiter) {
 		this.fileName = fileName;
 		this.sharedDir = sharedDir;
 		this.size = size;
 		this.fileServer = fileServer;
+		this.connectionLock = connectionLock;
+		this.waiter = waiter;
 	}
 
 	private void waitForConnection(ServerSocket fileServer) {
 		try {
 			s = fileServer.accept();
-			Waiter.connectionLock.unlock();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
 		}
 	}
 
@@ -45,8 +57,20 @@ public class FileReceiver extends Thread {
 		}
 	}
 
+	public void setMessage(String message, ServerCommand command) {
+		this.message = message;
+		this.command = command;
+	}
+
 	public void run() {
-		waitForConnection(fileServer);
+		try {
+			this.connectionLock.lock();
+			waiter.sendMessage(message, command);
+			waitForConnection(fileServer);
+		} catch (Exception e) {
+		} finally {
+			this.connectionLock.unlock();
+		}
 		setupStreams();
 
 		try {
@@ -55,7 +79,7 @@ public class FileReceiver extends Thread {
 			int len = 0;
 			while ((len = input.read(buf)) != -1) {
 				fos.write(buf, 0, len);
-				receivedSize+=len;
+				receivedSize += len;
 				fos.flush();
 			}
 			fos.close();
@@ -65,7 +89,6 @@ public class FileReceiver extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public boolean test() {
@@ -98,8 +121,13 @@ public class FileReceiver extends Thread {
 			return false;
 		}
 		fileName = prefix + "." + suffix;
-		
+
 		return true;
+	}
+
+	public void release() {
+		// TODO Auto-generated method stub
+		connectionLock.unlock();
 	}
 
 }

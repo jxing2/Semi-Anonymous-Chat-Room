@@ -31,11 +31,13 @@ public class DownloadWindow extends JFrame {
 	private int sizeX = 400, sizeY = 424;// window size
 	private JTree tree;
 	DefaultMutableTreeNode selectedNode;
-	DefaultMutableTreeNode top = new DefaultMutableTreeNode("Share");
+	DefaultMutableTreeNode top; 
 	JFileChooser fileChooser;
-	public DownloadWindow(final Client parent) {
+	String rootTxt;
+	public DownloadWindow(final Client parent, final String rootTxt) {
 		this.parent = parent;
-
+		this.rootTxt = rootTxt;
+		top = new DefaultMutableTreeNode(rootTxt);
 		c = getContentPane();
 		c.setLayout(null);
 		tree = new JTree(top);
@@ -58,6 +60,8 @@ public class DownloadWindow extends JFrame {
 		download.addActionListener(// send file upload request
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						if(fileToSave.equals(""))
+							return;
 						JFileChooser fileChooser = new JFileChooser();
 						fileChooser.setDialogTitle("Choose a directory");
 						// fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -71,7 +75,7 @@ public class DownloadWindow extends JFrame {
 								JOptionPane.showMessageDialog(null, "Already exist! Please rename the file.");
 								download.doClick();
 							} else {
-								parent.sendMessage(fileToSave + "\n" + savePath, CommandType.DownloadFileRequest);
+								parent.sendMessage(rootTxt + "\n" + fileToSave + "\n" + savePath, CommandType.DownloadFileRequest);
 							}
 						}
 					}
@@ -98,9 +102,10 @@ public class DownloadWindow extends JFrame {
 		public void valueChanged(TreeSelectionEvent e) {
 			// TODO Auto-generated method stub
 			selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-			fileToSave = selectedNode.getUserObject().toString();
-
+			if(!selectedNode.equals(top))
+				fileToSave = selectedNode.getUserObject().toString();
+			else
+				fileToSave = "";
 		}
-
 	}
 }

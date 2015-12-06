@@ -71,8 +71,6 @@ public class Server<ref> extends JFrame {
 				+ "_Chat.log";
 		String tmpDir2 = logDir + dateFormat.format(cal.getTime())
 				+ "_Operation.log";
-		System.out.println(tmpDir1);
-		System.out.println(tmpDir2);
 		logFile = new File(tmpDir1);
 		opLogFile = new File(tmpDir2);
 		SharedDirectory = new File(shareFileDir);
@@ -152,7 +150,7 @@ public class Server<ref> extends JFrame {
 			kick.start();
 			while (true) {
 				try {
-					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory,fileServer);
+					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory,fileServer,logDir);
 					waiter.serve(server);
 					waiter.start();
 					al.add(waiter);

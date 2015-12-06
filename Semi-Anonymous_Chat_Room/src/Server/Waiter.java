@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -46,8 +47,8 @@ public class Waiter extends Thread {
 	private String sharedFileDir;
 	private boolean isLogined = false;
 	String ClientIP;
-	public static Lock connectionLock = new ReentrantLock();
-	
+
+
 	public enum UserType {
 		Teacher, Student
 	}
@@ -61,9 +62,11 @@ public class Waiter extends Thread {
 	private static Lock chatLogLock = new ReentrantLock();
 	private static Lock writeAccountLock = new ReentrantLock();
 	File sharedDir;
-
-	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count, Document doc, FileWriter chatLog,
-			FileWriter opLog, File sharedDir, ServerSocket fileServer) {
+	File logDir;
+	final private Lock connectionLock = new ReentrantLock();
+	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
+			Document doc, FileWriter chatLog, FileWriter opLog, File sharedDir,
+			ServerSocket fileServer, String LogDir) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
@@ -73,6 +76,7 @@ public class Waiter extends Thread {
 		this.sharedDir = sharedDir;
 		al_send = new ArrayList<FileReceiver>();
 		this.fileServer = fileServer;
+		this.logDir = new File(LogDir);
 	}
 
 	private void waitForConnection(ServerSocket server) {
@@ -100,17 +104,28 @@ public class Waiter extends Thread {
 	}
 
 	// only used to send message to other users.
-	private void SendToOthers(String message, String nickName, String realName, boolean isTrim, UserType type) {
+	private void SendToOthers(String message, String nickName, String realName,
+			boolean isTrim, UserType type) {
 		// TODO Auto-generated method stub
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			if (type == UserType.Teacher) {
-				output.writeObject("@07" + realName + " - " + dateFormat.format(cal.getTime()) + "\n"
-						+ (isTrim ? message.substring(3, message.length()) : message));
+				output.writeObject("@07"
+						+ realName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
 			} else {
-				output.writeObject("@00" + nickName + " - " + dateFormat.format(cal.getTime()) + "\n"
-						+ (isTrim ? message.substring(3, message.length()) : message));
+				output.writeObject("@00"
+						+ nickName
+						+ " - "
+						+ dateFormat.format(cal.getTime())
+						+ "\n"
+						+ (isTrim ? message.substring(3, message.length())
+								: message));
 			}
 			output.flush();
 		} catch (IOException ie) {
@@ -161,14 +176,15 @@ public class Waiter extends Thread {
 		}
 	}
 
-	private void sendMessage(String message, ServerCommand cmd) {
+	public void sendMessage(String message, ServerCommand cmd) {
 		// TODO Auto-generated method stub
 		try {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 			Calendar cal = Calendar.getInstance();
 			switch (cmd) {
 			case PlainText:
-				output.writeObject("@00" + nickName + " - " + dateFormat.format(cal.getTime()) + "\n" + message);
+				output.writeObject("@00" + nickName + " - "
+						+ dateFormat.format(cal.getTime()) + "\n" + message);
 				break;
 			case Register_Alert:
 				output.writeObject("@01" + message);
@@ -178,7 +194,8 @@ public class Waiter extends Thread {
 				break;
 			case Register_Success:
 				output.writeObject("@02" + message);
-				showMessage(nickName + " - " + dateFormat.format(cal.getTime()) + "\n" + message);
+				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
+						+ "\n" + message);
 				break;
 			case Login_Alert:
 				output.writeObject("@03" + message);
@@ -191,7 +208,8 @@ public class Waiter extends Thread {
 					output.writeObject("@08" + message);
 				else
 					output.writeObject("@04" + message);
-				showMessage(nickName + " - " + dateFormat.format(cal.getTime()) + "\n" + message);
+				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
+						+ "\n" + message);
 				isLogined = true;
 				break;
 			case EditProfile_Alert:
@@ -199,7 +217,8 @@ public class Waiter extends Thread {
 				break;
 			case EditProfile_Success:
 				output.writeObject("@06" + message);
-				showMessage(nickName + " - " + dateFormat.format(cal.getTime()) + "\n" + message);
+				showMessage(nickName + " - " + dateFormat.format(cal.getTime())
+						+ "\n" + message);
 				break;
 			case SendRequestReply_Success:
 				output.writeObject("@10" + message);
@@ -212,6 +231,12 @@ public class Waiter extends Thread {
 				break;
 			case FileListRequestReply:
 				output.writeObject("@13" + message);
+				break;
+			case LogListRequestAlert:
+				output.writeObject("@14" + message);
+				break;
+			case LogListRequestSuccess:
+				output.writeObject("@15" + message);
 				break;
 			default:
 				return;
@@ -248,7 +273,8 @@ public class Waiter extends Thread {
 		// SendToOthers(message, false);
 		do {
 			try {
-				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+				DateFormat dateFormat = new SimpleDateFormat(
+						"yyyy/MM/dd hh:mm:ss");
 				Calendar cal = Calendar.getInstance();
 				message = String.valueOf(input.readObject());
 				for (int i = 0; i < al_send.size(); i++) {
@@ -258,16 +284,21 @@ public class Waiter extends Thread {
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0:// PlainText
-					showMessage(nickName + " - " + dateFormat.format(cal.getTime()) + "\n" + m.message);
-					chatLog(realName + " - " + dateFormat.format(cal.getTime()) + "\r\n" + m.message);
+					showMessage(nickName + " - "
+							+ dateFormat.format(cal.getTime()) + "\n"
+							+ m.message);
+					chatLog(realName + " - " + dateFormat.format(cal.getTime())
+							+ "\r\n" + m.message);
 					SendToOthers(message, true);
 					break;
 				case 1:
 					if (register(m.message)) {
-						opLog(GetUserInfo(m.message).name + " - " + dateFormat.format(cal.getTime()) + "--"
+						opLog(GetUserInfo(m.message).name + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Registered. IP:" + ClientIP);
 					} else {
-						opLog(GetUserInfo(m.message).name + " - " + dateFormat.format(cal.getTime()) + "--"
+						opLog(GetUserInfo(m.message).name + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Register failed. IP:" + ClientIP);
 					}
 					break;
@@ -278,19 +309,23 @@ public class Waiter extends Thread {
 							String noticeToOther = nickName + " connected";
 							sendNotification(noticeToSelf);
 							SendNotificationToOthers(noticeToOther);
-							opLog(realName + " - " + dateFormat.format(cal.getTime()) + "--" + "Logined. IP:"
-									+ ClientIP);
+							opLog(realName + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
+									+ "Logined. IP:" + ClientIP);
 						} else {
-							opLog(GetUserInfo(m.message).name + " - " + dateFormat.format(cal.getTime()) + "--"
+							opLog(GetUserInfo(m.message).name + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
 									+ "Login failed. IP:" + ClientIP);
 						}
 					break;
 				case 3:
 					if (editProfile(m.message)) {
-						opLog(GetUserInfo(m.message).name + " - " + dateFormat.format(cal.getTime()) + "--"
+						opLog(GetUserInfo(m.message).name + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Changed password. IP:" + ClientIP);
 					} else {
-						opLog(GetUserInfo(m.message).name + " - " + dateFormat.format(cal.getTime()) + "--"
+						opLog(GetUserInfo(m.message).name + " - "
+								+ dateFormat.format(cal.getTime()) + "--"
 								+ "Change password failed. IP:" + ClientIP);
 					}
 					break;
@@ -315,6 +350,24 @@ public class Waiter extends Thread {
 					}
 					sendMessage(tmp, ServerCommand.FileListRequestReply);
 					break;
+				case 7:
+					if (this.type == UserType.Teacher) {
+						File[] logFiles = logDir.listFiles();
+						String mes = "";
+						for (int i = 0; i < logFiles.length; ++i) {
+							if (logFiles[i].isFile())
+								mes += logFiles[i].getName();
+							else
+								continue;
+							if (i < logFiles.length - 1)
+								mes += "\n";
+						}
+						sendMessage(mes, ServerCommand.LogListRequestSuccess);
+					} else {
+						sendMessage("Students are not allowed to download Log",
+								ServerCommand.LogListRequestAlert);
+					}
+					break;
 				}
 				// System.out.println(message);
 			} catch (ClassNotFoundException cnfe) {
@@ -332,35 +385,55 @@ public class Waiter extends Thread {
 	private void locateFile(String message) {
 		// TODO Auto-generated method stub
 		String[] tmp = message.split("\n");
-		String fileName = tmp[0];
-		String savePath = tmp[1];
-		File[] filelist = sharedDir.listFiles();
+		String downloadType = tmp[0];
+		String fileName = tmp[1];
+		String savePath = tmp[2];
+		File[] filelist;
+		if (downloadType.equals("Share")) {
+			filelist = sharedDir.listFiles();
 
-		for (int i = 0; i < filelist.length; i++) {
+			for (int i = 0; i < filelist.length; i++) {
 
-			if (fileName.equals(filelist[i].getName())) {
-				File fileToSend = new File(filelist[i].getPath());
-				long size = fileToSend.length();
-				FileSender fs = new FileSender(filelist[i].getPath(), size, filePort, fileServer);
-				connectionLock.lock();
-				fs.start();
-				sendMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
+				if (fileName.equals(filelist[i].getName())) {
+					File fileToSend = new File(filelist[i].getPath());
+					long size = fileToSend.length();
+					FileSender fs = new FileSender(filelist[i].getPath(), size,
+							filePort, fileServer, connectionLock, this);
+					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
+					fs.start();
+					break;
+				}
+			}
+		}
+		else // download log file
+		{
+			filelist = logDir.listFiles();
+			for (int i = 0; i < filelist.length; i++) {
+
+				if (fileName.equals(filelist[i].getName())) {
+					File fileToSend = new File(filelist[i].getPath());
+					long size = fileToSend.length();
+					FileSender fs = new FileSender(filelist[i].getPath(), size,
+							filePort, fileServer, connectionLock, this);
+					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
+					fs.start();
+					break;
+				}
 			}
 		}
 	}
+
 	private void validate(String message) {
 		String[] tmp = message.split("\n");
 		String fileName = tmp[0];
 		long size = Integer.parseInt(tmp[1]);
 		String filePath = tmp[2];
-		FileReceiver fr = new FileReceiver(fileName, sharedDir, size, fileServer);
-
+		FileReceiver fr = new FileReceiver(fileName, sharedDir, size,
+				fileServer , connectionLock, this);
 		if (fr.test()) {
-			connectionLock.lock();
+			fr.setMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
 			fr.start();
-			sendMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
-		} 
-		else {
+		} else {
 			sendMessage("Not ready!", ServerCommand.SendRequestReply_Alert);
 			return;
 		}
@@ -373,20 +446,26 @@ public class Waiter extends Thread {
 		// test if ID exist
 		NodeList allUser = doc.getElementsByTagName("User");
 		for (int i = 0; i < allUser.getLength(); ++i) {
-			if (allUser.item(i).getAttributes().getNamedItem("ID").getNodeValue().equals(user.name)
-					&& allUser.item(i).getAttributes().getNamedItem("PWD").getNodeValue().equals(user.password)) {
-				allUser.item(i).getAttributes().getNamedItem("PWD").setNodeValue(user.new_password);
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)
+					&& allUser.item(i).getAttributes().getNamedItem("PWD")
+							.getNodeValue().equals(user.password)) {
+				allUser.item(i).getAttributes().getNamedItem("PWD")
+						.setNodeValue(user.new_password);
 				boolean result = doc2XmlFile(doc, "./Server_Account.xml");
 				if (result) {
-					sendMessage("New password set!", ServerCommand.EditProfile_Success);
+					sendMessage("New password set!",
+							ServerCommand.EditProfile_Success);
 					return true;
 				} else {
-					sendMessage("Failed: Server data file is wrong!", ServerCommand.EditProfile_Alert);
+					sendMessage("Failed: Server data file is wrong!",
+							ServerCommand.EditProfile_Alert);
 					return false;
 				}
 			}
 		}
-		sendMessage("Failed: Name and password does not match!", ServerCommand.EditProfile_Alert);
+		sendMessage("Failed: Name and password does not match!",
+				ServerCommand.EditProfile_Alert);
 		return false;
 	}
 
@@ -396,24 +475,29 @@ public class Waiter extends Thread {
 
 		testLogined = new IsLogined(al, user.name);
 		if (testLogined.run()) {
-			sendMessage("Failed: This account already signed in!", ServerCommand.Login_Alert);
+			sendMessage("Failed: This account already signed in!",
+					ServerCommand.Login_Alert);
 			return false;
 		}
 
 		NodeList allUser = doc.getElementsByTagName("User");
 
 		for (int i = 0; i < allUser.getLength(); ++i) {
-			if (allUser.item(i).getAttributes().getNamedItem("ID").getNodeValue().equals(user.name)
-					&& allUser.item(i).getAttributes().getNamedItem("PWD").getNodeValue().equals(user.password)) {
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)
+					&& allUser.item(i).getAttributes().getNamedItem("PWD")
+							.getNodeValue().equals(user.password)) {
 				realName = user.name;
-				type = (allUser.item(i).getAttributes().getNamedItem("Type").getNodeValue().equals("1"))
-						? UserType.Student : UserType.Teacher;
+				type = (allUser.item(i).getAttributes().getNamedItem("Type")
+						.getNodeValue().equals("1")) ? UserType.Student
+						: UserType.Teacher;
 				System.out.println(type);
 				sendMessage("Success!", ServerCommand.Login_Success);
 				return true;
 			}
 		}
-		sendMessage("Failed: Name and password does not match!", ServerCommand.Login_Alert);
+		sendMessage("Failed: Name and password does not match!",
+				ServerCommand.Login_Alert);
 		return false;
 	}
 
@@ -433,8 +517,10 @@ public class Waiter extends Thread {
 		// test if ID exist
 		NodeList allUser = doc.getElementsByTagName("User");
 		for (int i = 0; i < allUser.getLength(); ++i) {
-			if (allUser.item(i).getAttributes().getNamedItem("ID").getNodeValue().equals(user.name)) {
-				sendMessage("Failed: Name already exist!", ServerCommand.Register_Alert);
+			if (allUser.item(i).getAttributes().getNamedItem("ID")
+					.getNodeValue().equals(user.name)) {
+				sendMessage("Failed: Name already exist!",
+						ServerCommand.Register_Alert);
 				return false;
 			}
 		}
@@ -450,7 +536,8 @@ public class Waiter extends Thread {
 			sendMessage("Success!", ServerCommand.Register_Success);
 			return true;
 		} else {
-			sendMessage("Failed: Server data file is wrong!", ServerCommand.Register_Alert);
+			sendMessage("Failed: Server data file is wrong!",
+					ServerCommand.Register_Alert);
 			return false;
 		}
 	}
@@ -466,7 +553,8 @@ public class Waiter extends Thread {
 			StreamResult result = new StreamResult(new File(filename));
 			transformer.transform(source, result);
 			// reload doc
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			this.doc = builder.parse("./Server_Account.xml");
 		} catch (Exception ex) {

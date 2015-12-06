@@ -61,6 +61,7 @@ public class Client extends JFrame {
 	Change_PWD chang_PWD;
 	ChooserWindow chooserWindow;
 	DownloadWindow downloadWindow;
+	DownloadWindow downloadLogWindow;
 	JScrollPane jsp;						//Scroll Panel of chat history
 
 	
@@ -109,6 +110,7 @@ public class Client extends JFrame {
 		JMenuItem exit = new JMenuItem("Exit");
 		JMenuItem sendFile = new JMenuItem("Send file");
 		JMenuItem downloadFile = new JMenuItem("Download file");
+		JMenuItem downloadLog = new JMenuItem("Download Log");
 		JMenuItem status = new JMenuItem("Status");
 		JMenu account = new JMenu("Account");
 		JMenu file = new JMenu("File");
@@ -128,6 +130,7 @@ public class Client extends JFrame {
 		account.add(exit);
 		file.add(sendFile);
 		file.add(downloadFile);
+		file.add(downloadLog);
 		file.add(status);
 		signIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -163,6 +166,11 @@ public class Client extends JFrame {
 				downloadFile();
 			}
 		});
+		downloadLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				downloadLog();
+			}
+		});
 		status.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				status();
@@ -171,6 +179,11 @@ public class Client extends JFrame {
 		setJMenuBar(bar);
 		setSize(900, 700);
 		centreWindow(this);
+	}
+
+	protected void downloadLog() {
+		// TODO Auto-generated method stub
+		sendMessage("",CommandType.LogListRequest);
 	}
 
 	protected void status() {
@@ -191,7 +204,7 @@ public class Client extends JFrame {
 
 	private void downloadFile() {
 		// TODO Auto-generated method stub
-		downloadWindow = new DownloadWindow(this);
+		downloadWindow = new DownloadWindow(this,"Share");
 		sendMessage("request downloading",CommandType.FileListRequest);
 		
 	}
@@ -391,6 +404,14 @@ public class Client extends JFrame {
 				case 13:
 					handleList(m.message);
 					break;
+				case 14:
+					JOptionPane.showMessageDialog(null, m.message);
+					break;
+				case 15:
+					downloadLogWindow = new DownloadWindow(this,"Log");
+					String[] fileList = m.message.split("\n");
+					downloadLogWindow.reloadFileList(fileList);
+					break;
 				default:
 					return;
 				}
@@ -403,8 +424,6 @@ public class Client extends JFrame {
 	private void handleList(String message) {
 		// TODO Auto-generated method stub
 		String[] fileList = message.split("\n");
-		for(int i = 0 ; i < fileList.length; ++i)
-			System.out.println(fileList[i]);
 		if(downloadWindow!=null)
 		{
 			downloadWindow.reloadFileList(fileList);
@@ -413,8 +432,9 @@ public class Client extends JFrame {
 
 	private void downloadFile(String message, int filePort, String IP) {
 		// TODO Auto-generated method stub
+		System.out.println("message:"+message);
 		String[] tmp = message.split("\n");
-		long totalSize = Integer.parseInt(tmp[1]);
+		long totalSize = Long.parseLong(tmp[1]);
 		Download download = new Download(tmp[0], IP, filePort, totalSize);
 		download.start();
 		al_download.add(download);
@@ -475,6 +495,12 @@ public class Client extends JFrame {
 				break;
 			case FileListRequest:
 				tmp = "@06" + message;
+				break;
+			case LogListRequest:
+				tmp = "@07" + message;
+				break;
+			case DownloadLogRequest:
+				tmp = "@08" + message;
 				break;
 			default:
 				return;// do nothing
