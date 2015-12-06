@@ -65,7 +65,6 @@ public class Download extends Thread{
 			
 			while ((len = input.read(buf)) != -1) {
 				fos.write(buf, 0, len);
-				System.out.println(len);
 				sendByte += len;
 				fos.flush();
 			}

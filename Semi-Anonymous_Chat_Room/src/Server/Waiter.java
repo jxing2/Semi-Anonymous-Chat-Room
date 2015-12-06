@@ -46,7 +46,8 @@ public class Waiter extends Thread {
 	private String sharedFileDir;
 	private boolean isLogined = false;
 	String ClientIP;
-
+	public static Lock connectionLock = new ReentrantLock();
+	
 	public enum UserType {
 		Teacher, Student
 	}
@@ -341,6 +342,7 @@ public class Waiter extends Thread {
 				File fileToSend = new File(filelist[i].getPath());
 				long size = fileToSend.length();
 				FileSender fs = new FileSender(filelist[i].getPath(), size, filePort, fileServer);
+				connectionLock.lock();
 				fs.start();
 				sendMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
 			}
@@ -354,6 +356,7 @@ public class Waiter extends Thread {
 		FileReceiver fr = new FileReceiver(fileName, sharedDir, size, fileServer);
 
 		if (fr.test()) {
+			connectionLock.lock();
 			fr.start();
 			sendMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
 		} 

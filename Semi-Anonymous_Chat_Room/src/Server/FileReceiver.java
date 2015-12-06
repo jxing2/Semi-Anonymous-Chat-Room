@@ -29,6 +29,7 @@ public class FileReceiver extends Thread {
 	private void waitForConnection(ServerSocket fileServer) {
 		try {
 			s = fileServer.accept();
+			Waiter.connectionLock.unlock();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,7 +55,6 @@ public class FileReceiver extends Thread {
 			int len = 0;
 			while ((len = input.read(buf)) != -1) {
 				fos.write(buf, 0, len);
-				System.out.println(len);
 				receivedSize+=len;
 				fos.flush();
 			}

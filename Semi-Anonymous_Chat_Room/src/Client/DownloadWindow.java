@@ -30,16 +30,12 @@ public class DownloadWindow extends JFrame {
 	private int width = 340;
 	private int sizeX = 400, sizeY = 424;// window size
 	private JTree tree;
-	private File folder;
 	DefaultMutableTreeNode selectedNode;
 	DefaultMutableTreeNode top = new DefaultMutableTreeNode("Share");
 	JFileChooser fileChooser;
 	public DownloadWindow(final Client parent) {
-		// tree = new TreeViewer(fileDir);
 		this.parent = parent;
-		// for (int i = 0; i < listOfFiles.length; i++) {
-		// top.add(new DefaultMutableTreeNode(listOfFiles[i].getName()));
-		// }
+
 		c = getContentPane();
 		c.setLayout(null);
 		tree = new JTree(top);
@@ -58,15 +54,10 @@ public class DownloadWindow extends JFrame {
 		setResizable(false);
 		Client.centreWindow(this);
 		setVisible(true);
-		// System.out.println("Download");
-		// JTree tree = new JTree (addNodes(null,fileDir)) ;
 
 		download.addActionListener(// send file upload request
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						// if (fileName_txt.getText().trim().equals("")){
-						// return;
-						// }
 						JFileChooser fileChooser = new JFileChooser();
 						fileChooser.setDialogTitle("Choose a directory");
 						// fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

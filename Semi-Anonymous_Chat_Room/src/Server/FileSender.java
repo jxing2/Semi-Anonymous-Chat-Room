@@ -29,6 +29,7 @@ public class FileSender extends Thread {
 	private void waitForConnection(ServerSocket fileServer) {
 		try {
 			s = fileServer.accept();
+			Waiter.connectionLock.unlock();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,15 +55,11 @@ public class FileSender extends Thread {
 			byte[] buf = new byte[bufferSize];
 			fileToSend = new File(filePath);
 			System.out.println(filePath);
-			//socket = new Socket(IP, filePort);
-			//output = new ObjectOutputStream(s.getOutputStream());
 			fis = new FileInputStream(fileToSend);
 			int len = 0;  
-			System.out.println("ready");
 	        while ((len = fis.read(buf)) != -1) {  
 	            output.write(buf, 0, len);  
 	            sendByte += len;
-	            System.out.println(len);
 	            output.flush();
 	        } 
 	        //os.flush();
