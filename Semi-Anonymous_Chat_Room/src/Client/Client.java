@@ -382,6 +382,7 @@ public class Client extends JFrame {
 					SendFile(m.message, filePort, IP);
 					break;
 				case 11:
+					JOptionPane.showMessageDialog(null, m.message);
 					break;
 				case 12://download request reply success
 					
