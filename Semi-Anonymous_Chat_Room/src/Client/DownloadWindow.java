@@ -75,14 +75,14 @@ public class DownloadWindow extends JFrame {
 						int returnVal = fileChooser.showSaveDialog(null);
 						if (returnVal == JFileChooser.APPROVE_OPTION) {
 							savePath = fileChooser.getSelectedFile().getAbsolutePath();
-							if (fileToSave.equals(fileChooser.getSelectedFile().getName())) {
-								JOptionPane.showMessageDialog(null, "Already exist in selected directory!");
+							File fileTest = new File(savePath);
+							if (fileTest.exists()) {
+								JOptionPane.showMessageDialog(null, "Already exist! Please rename the file.");
+								download.doClick();
 							} else {
 								parent.sendMessage(fileToSave + "\n" + savePath, CommandType.DownloadFileRequest);
 								dispose();
 							}
-						
-							// System.out.println(savePath);
 						}
 					}
 				});

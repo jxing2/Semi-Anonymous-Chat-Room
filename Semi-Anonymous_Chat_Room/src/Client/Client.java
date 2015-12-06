@@ -417,6 +417,7 @@ public class Client extends JFrame {
 		long totalSize = Integer.parseInt(tmp[1]);
 		Download download = new Download(downloadWindow.getSavePath(), IP, filePort, totalSize);
 		download.start();
+		al_download.add(download);
 	}
 
 	private void SendFile(String message, int filePort, String IP) {
