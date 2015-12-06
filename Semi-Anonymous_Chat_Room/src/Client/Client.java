@@ -63,7 +63,7 @@ public class Client extends JFrame {
 	DownloadWindow downloadWindow;
 	DownloadWindow downloadLogWindow;
 	JScrollPane jsp;						//Scroll Panel of chat history
-
+	JMenu file;
 	
 	private boolean isLogined = false;
 	Font inputFont ;
@@ -78,7 +78,7 @@ public class Client extends JFrame {
 		
 		//text field on chat room
 		j_input = new JTextField();
-		ableToType(false);
+		
 		j_input.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
 				sendMessage(e.getActionCommand());
@@ -113,7 +113,7 @@ public class Client extends JFrame {
 		JMenuItem downloadLog = new JMenuItem("Download Log");
 		JMenuItem status = new JMenuItem("Status");
 		JMenu account = new JMenu("Account");
-		JMenu file = new JMenu("File");
+		file = new JMenu("File");
 		signIn.setAccelerator(KeyStroke.getKeyStroke('L', Toolkit
 				.getDefaultToolkit().getMenuShortcutKeyMask()));
 		exit.setAccelerator(KeyStroke.getKeyStroke('E', Toolkit
@@ -132,6 +132,7 @@ public class Client extends JFrame {
 		file.add(downloadFile);
 		file.add(downloadLog);
 		file.add(status);
+		ableToType(false);
 		signIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				if (!isLogined)
@@ -516,6 +517,7 @@ public class Client extends JFrame {
 	private void ableToType(boolean b) {
 		// TODO Auto-generated method stub
 		j_input.setEditable(b);
+		file.setEnabled(b);
 	}
 
 	private void setupStreams()  {

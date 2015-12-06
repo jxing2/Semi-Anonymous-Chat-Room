@@ -48,7 +48,6 @@ public class Waiter extends Thread {
 	private boolean isLogined = false;
 	String ClientIP;
 
-
 	public enum UserType {
 		Teacher, Student
 	}
@@ -64,6 +63,9 @@ public class Waiter extends Thread {
 	File sharedDir;
 	File logDir;
 	final private Lock connectionLock = new ReentrantLock();
+	DateFormat dateFormat = new SimpleDateFormat(
+			"yyyy/MM/dd hh:mm:ss");
+	Calendar cal = Calendar.getInstance();
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog, File sharedDir,
 			ServerSocket fileServer, String LogDir) {
@@ -273,9 +275,7 @@ public class Waiter extends Thread {
 		// SendToOthers(message, false);
 		do {
 			try {
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd hh:mm:ss");
-				Calendar cal = Calendar.getInstance();
+				
 				message = String.valueOf(input.readObject());
 				for (int i = 0; i < al_send.size(); i++) {
 					System.out.println(al_send.get(i));
@@ -401,9 +401,13 @@ public class Waiter extends Thread {
 							filePort, fileServer, connectionLock, this);
 					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
 					fs.start();
-					break;
+					opLog(realName + " - "
+							+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName);
+					return;
 				}
 			}
+			opLog(realName + " - "
+					+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName+" Failed");
 		}
 		else // download log file
 		{
@@ -417,9 +421,13 @@ public class Waiter extends Thread {
 							filePort, fileServer, connectionLock, this);
 					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
 					fs.start();
-					break;
+					opLog(realName + " - "
+							+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName);
+					return;
 				}
 			}
+			opLog(realName + " - "
+					+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName+" Failed");
 		}
 	}
 
@@ -433,8 +441,12 @@ public class Waiter extends Thread {
 		if (fr.test()) {
 			fr.setMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
 			fr.start();
+			opLog(realName + " - "
+					+ dateFormat.format(cal.getTime()) + " begin to Upload file "+ fr.fileName);
 		} else {
 			sendMessage("Not ready!", ServerCommand.SendRequestReply_Alert);
+			opLog(realName + " - "
+					+ dateFormat.format(cal.getTime()) + " begin to Upload file "+ fr.fileName+" Failed");
 			return;
 		}
 		al_send.add(fr);

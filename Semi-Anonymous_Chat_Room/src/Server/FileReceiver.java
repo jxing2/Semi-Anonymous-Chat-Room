@@ -7,7 +7,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class FileReceiver extends Thread {
-	private String fileName;
+	public String fileName;
 	private int filePort;
 	private ServerSocket fileServer;
 	private Socket s;
