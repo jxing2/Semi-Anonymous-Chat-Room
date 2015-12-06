@@ -4,7 +4,6 @@ package Client;
 @author: Xiaoyu Fan
 @author: Xi Li
 Client user interface
-
 */
 
 import java.io.*;
@@ -39,13 +38,13 @@ import java.util.Calendar;
 
 public class Client extends JFrame {
 
-	private JTextField j_input;
-	private JTextPane j_public;
-	private ObjectOutputStream output;
-	private ObjectInputStream input;
+	private JTextField j_input;				//text field on chat room
+	private JTextPane j_public;				//chat history on chat room
+	private ObjectOutputStream output;		//to write on the socket
+	private ObjectInputStream input;		//to read from the socket
 	private Socket sock;
 	//private String message = "";
-	private String IP;// host
+	private String IP;						// host
 	private int port;
 	private int filePort;
 	private String realName;
@@ -54,24 +53,29 @@ public class Client extends JFrame {
 	private ArrayList<Send> al_send; 
 	private ArrayList<Download> al_download;
 	//private ArrayList<Download>
-	JMenuBar bar;
+	JMenuBar bar;							//menu
+	JMenuItem signIn;
 	Sign_Up sign_up;
 	Sign_In login;
 	StatusWindow statusWindow;
 	Change_PWD chang_PWD;
 	ChooserWindow chooserWindow;
 	DownloadWindow downloadWindow;
-	JScrollPane jsp;
-	JMenuItem signIn;
+	JScrollPane jsp;						//Scroll Panel of chat history
+
 	
 	private boolean isLogined = false;
 	Font inputFont ;
 	private int fontSize = 19;
+	
+	//Constructor
 	public Client() {
 		super("Client");
-		readXML();
+		readXML();							//read XML file
 		al_send = new ArrayList<Send>();
 		al_download = new ArrayList<Download>();
+		
+		//text field on chat room
 		j_input = new JTextField();
 		ableToType(false);
 		j_input.addActionListener(new ActionListener() {
@@ -84,7 +88,8 @@ public class Client extends JFrame {
 		j_input.setFont(inputFont);
 		add(j_input, BorderLayout.SOUTH);
 		// ----------------------------------------
-
+		
+		//chat history on chat room
 		j_public = new JTextPane();
 		j_public.setEditable(false);
 		add(jsp = new JScrollPane(j_public), BorderLayout.CENTER);
@@ -95,7 +100,8 @@ public class Client extends JFrame {
 				System.exit(0);
 			}
 		});
-
+		
+		// Menu with 6 Buttons
 		bar = new JMenuBar();
 		signIn = new JMenuItem("Login");
 		JMenuItem signUp = new JMenuItem("Sign up");
@@ -317,10 +323,10 @@ public class Client extends JFrame {
 				System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
-				case 0:
+				case 0: 
 					showMessage(m.message, UserType.Student);
 					break;
-				case 1:
+				case 1:	
 					JOptionPane.showMessageDialog(sign_up, m.message);
 					if (sign_up != null)
 						sign_up.clear();
