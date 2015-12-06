@@ -69,7 +69,7 @@ public class DownloadWindow extends JFrame {
 						fileChooser.setDialogTitle("Choose a directory");
 						//fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 						fileChooser.setVisible(true);
-						//fileChooser.setMultiSelectionEnabled(false);
+						fileChooser.setSelectedFile(new File(fileToSave));
 						int returnVal = fileChooser.showSaveDialog(null);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
 					    	savePath = fileChooser.getSelectedFile().getAbsolutePath();
