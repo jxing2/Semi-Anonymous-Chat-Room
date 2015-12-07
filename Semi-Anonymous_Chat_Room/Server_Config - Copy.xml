@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Configuration>
-	<Socket IP="127.0.0.1" Port="6789" />
-	<LogDir Value="./Log/" />
-	<ShareFileDir Value="./Share/" />
-</Configuration>
