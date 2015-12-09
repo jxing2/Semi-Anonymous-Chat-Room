@@ -41,7 +41,6 @@ public class Waiter extends Thread {
 	private int filePort;
 	private JTextArea j_public;
 	private ArrayList<Waiter> al;
-	private ArrayList<FileReceiver> al_send;
 	public String nickName;
 	public String realName;
 	private String sharedFileDir;
@@ -76,7 +75,6 @@ public class Waiter extends Thread {
 		this.chatLog = chatLog;
 		this.opLog = opLog;
 		this.sharedDir = sharedDir;
-		al_send = new ArrayList<FileReceiver>();
 		this.fileServer = fileServer;
 		this.logDir = new File(LogDir);
 	}
@@ -277,10 +275,6 @@ public class Waiter extends Thread {
 			try {
 				
 				message = String.valueOf(input.readObject());
-				for (int i = 0; i < al_send.size(); i++) {
-					System.out.println(al_send.get(i));
-				}
-				// System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0:// PlainText
@@ -449,7 +443,6 @@ public class Waiter extends Thread {
 					+ dateFormat.format(cal.getTime()) + " begin to Upload file "+ fr.fileName+" Failed");
 			return;
 		}
-		al_send.add(fr);
 	}
 
 	private boolean editProfile(String message) {
