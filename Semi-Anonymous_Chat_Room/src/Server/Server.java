@@ -111,7 +111,7 @@ public class Server<ref> extends JFrame {
 			DocumentBuilder builder1 = factory1.newDocumentBuilder();
 			configDoc = builder1.parse("./Server_Config.xml");
 		} catch (ParserConfigurationException e) {
-			System.out.println(e.getMessage());
+			
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

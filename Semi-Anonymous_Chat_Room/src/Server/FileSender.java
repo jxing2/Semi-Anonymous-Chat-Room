@@ -79,7 +79,6 @@ public class FileSender extends Thread {
 			int bufferSize = 2048;
 			byte[] buf = new byte[bufferSize];
 			fileToSend = new File(filePath);
-			System.out.println(filePath);
 			fis = new FileInputStream(fileToSend);
 			int len = 0;
 			while ((len = fis.read(buf)) != -1) {

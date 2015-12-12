@@ -227,7 +227,7 @@ public class Client extends JFrame {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			this.doc = builder.parse("./Client_Configuration.xml");
 		} catch (ParserConfigurationException e) {
-			System.out.println(e.getMessage());
+			
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -236,12 +236,10 @@ public class Client extends JFrame {
 			e.printStackTrace();
 		}
 		NodeList root = doc.getChildNodes();
-		// System.out.println(root);
 		Node nodes = root.item(0);
 		NodeList info = nodes.getChildNodes();
 
 		for (int j = 0; j < info.getLength(); ++j) {
-			// System.out.println(info.item(j).getNodeName());
 			if (info.item(j).getNodeName().equals("Configuration")) {
 				NodeList socketInfo = info.item(j).getChildNodes();
 				for (int i = 0; i < socketInfo.getLength(); ++i) {
@@ -334,7 +332,6 @@ public class Client extends JFrame {
 			try {
 				j_public.setCaretPosition(j_public.getDocument().getLength());
 				message = String.valueOf(input.readObject());
-				System.out.println(message);
 				Message m = handleMessage(message);
 				switch (m.type) {
 				case 0: 
@@ -433,7 +430,7 @@ public class Client extends JFrame {
 
 	private void downloadFile(String message, int filePort, String IP) {
 		// TODO Auto-generated method stub
-		System.out.println("message:"+message);
+		
 		String[] tmp = message.split("\n");
 		long totalSize = Long.parseLong(tmp[1]);
 		Download download = new Download(tmp[0], IP, filePort, totalSize);
@@ -507,7 +504,6 @@ public class Client extends JFrame {
 				return;// do nothing
 			}
 			output.writeObject(tmp);
-			System.out.println(tmp);
 			output.flush();
 		} catch (IOException ie) {
 			ie.printStackTrace();
@@ -556,7 +552,7 @@ public class Client extends JFrame {
 		try {
 			doc.insertString(doc.getLength(), str, attrSet);
 		} catch (BadLocationException e) {
-			System.out.println("BadLocationException: " + e);
+			
 		}
 	}
 

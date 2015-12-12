@@ -243,7 +243,7 @@ public class Waiter extends Thread {
 			default:
 				return;
 			}
-			System.out.println(message);
+			
 			output.flush();
 		} catch (IOException ie) {
 			flag = false;
@@ -372,7 +372,7 @@ public class Waiter extends Thread {
 					}
 					break;
 				}
-				// System.out.println(message);
+				
 			} catch (ClassNotFoundException cnfe) {
 				flag = false;
 				showMessage("I dont know what user send");
@@ -507,7 +507,7 @@ public class Waiter extends Thread {
 				type = (allUser.item(i).getAttributes().getNamedItem("Type")
 						.getNodeValue().equals("1")) ? UserType.Student
 						: UserType.Teacher;
-				System.out.println(type);
+				
 				sendMessage("Success!", ServerCommand.Login_Success);
 				return true;
 			}
@@ -526,7 +526,7 @@ public class Waiter extends Thread {
 		e.setAttribute("Type", "1");
 
 		NodeList root = doc.getChildNodes();
-		// System.out.println(root);
+		
 		Node nodes = root.item(0);
 		NodeList info = nodes.getChildNodes();
 

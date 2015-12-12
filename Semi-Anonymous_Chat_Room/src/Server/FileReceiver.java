@@ -102,7 +102,6 @@ public class FileReceiver extends Thread {
 			prefix = fileName;
 			suffix = "";
 		}
-		System.out.println(prefix + "   " + suffix);
 		try {
 			File tmp;
 			boolean exist;
