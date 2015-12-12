@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Configuration>
+	<Socket IP="192.168.1.15" Port="6789" />
 	<Socket IP="127.0.0.1" Port="6789" />
 	<LogDir Value="./Log/" />
 	<ShareFileDir Value="./Share/" />
+	<Register Value="1" /><!-- 0 mean user cannot register through client, 1 mean user can register. -->
 </Configuration>

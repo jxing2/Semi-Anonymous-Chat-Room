@@ -54,6 +54,7 @@ public class Waiter extends Thread {
 	private UserType type;
 	public boolean flag;
 	private Document doc;
+	private boolean allowRegister;
 	FileWriter chatLog;
 	FileWriter opLog;
 	IsLogined testLogined;
@@ -62,12 +63,12 @@ public class Waiter extends Thread {
 	File sharedDir;
 	File logDir;
 	final private Lock connectionLock = new ReentrantLock();
-	DateFormat dateFormat = new SimpleDateFormat(
-			"yyyy/MM/dd hh:mm:ss");
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 	Calendar cal = Calendar.getInstance();
+
 	public Waiter(JTextArea j_public, ArrayList<Waiter> al, int count,
 			Document doc, FileWriter chatLog, FileWriter opLog, File sharedDir,
-			ServerSocket fileServer, String LogDir) {
+			ServerSocket fileServer, String LogDir, boolean allowRegister) {
 		this.j_public = j_public;
 		this.al = al;
 		nickName = "User" + count;
@@ -77,6 +78,7 @@ public class Waiter extends Thread {
 		this.sharedDir = sharedDir;
 		this.fileServer = fileServer;
 		this.logDir = new File(LogDir);
+		this.allowRegister = allowRegister;
 	}
 
 	private void waitForConnection(ServerSocket server) {
@@ -273,7 +275,7 @@ public class Waiter extends Thread {
 		// SendToOthers(message, false);
 		do {
 			try {
-				
+
 				message = String.valueOf(input.readObject());
 				Message m = handleMessage(message);
 				switch (m.type) {
@@ -286,14 +288,21 @@ public class Waiter extends Thread {
 					SendToOthers(message, true);
 					break;
 				case 1:
-					if (register(m.message)) {
-						opLog(GetUserInfo(m.message).name + " - "
-								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Registered. IP:" + ClientIP);
-					} else {
-						opLog(GetUserInfo(m.message).name + " - "
-								+ dateFormat.format(cal.getTime()) + "--"
-								+ "Register failed. IP:" + ClientIP);
+					if (allowRegister) {
+						if (register(m.message)) {
+							opLog(GetUserInfo(m.message).name + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
+									+ "Registered. IP:" + ClientIP);
+						} else {
+							opLog(GetUserInfo(m.message).name + " - "
+									+ dateFormat.format(cal.getTime()) + "--"
+									+ "Register failed. IP:" + ClientIP);
+						}
+					}
+					else
+					{
+						sendMessage("Failed: Register denied!",
+								ServerCommand.Register_Alert);
 					}
 					break;
 				case 2:
@@ -393,17 +402,17 @@ public class Waiter extends Thread {
 					long size = fileToSend.length();
 					FileSender fs = new FileSender(filelist[i].getPath(), size,
 							filePort, fileServer, connectionLock, this);
-					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
+					fs.setMessage(savePath + "\n" + size,
+							ServerCommand.DownloadRequestReply_Success);
 					fs.start();
-					opLog(realName + " - "
-							+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName);
+					opLog(realName + " - " + dateFormat.format(cal.getTime())
+							+ " begin to download file " + fileName);
 					return;
 				}
 			}
-			opLog(realName + " - "
-					+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName+" Failed");
-		}
-		else // download log file
+			opLog(realName + " - " + dateFormat.format(cal.getTime())
+					+ " begin to download file " + fileName + " Failed");
+		} else // download log file
 		{
 			filelist = logDir.listFiles();
 			for (int i = 0; i < filelist.length; i++) {
@@ -413,15 +422,16 @@ public class Waiter extends Thread {
 					long size = fileToSend.length();
 					FileSender fs = new FileSender(filelist[i].getPath(), size,
 							filePort, fileServer, connectionLock, this);
-					fs.setMessage(savePath + "\n" + size, ServerCommand.DownloadRequestReply_Success);
+					fs.setMessage(savePath + "\n" + size,
+							ServerCommand.DownloadRequestReply_Success);
 					fs.start();
-					opLog(realName + " - "
-							+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName);
+					opLog(realName + " - " + dateFormat.format(cal.getTime())
+							+ " begin to download file " + fileName);
 					return;
 				}
 			}
-			opLog(realName + " - "
-					+ dateFormat.format(cal.getTime()) + " begin to download file "+ fileName+" Failed");
+			opLog(realName + " - " + dateFormat.format(cal.getTime())
+					+ " begin to download file " + fileName + " Failed");
 		}
 	}
 
@@ -431,16 +441,17 @@ public class Waiter extends Thread {
 		long size = Integer.parseInt(tmp[1]);
 		String filePath = tmp[2];
 		FileReceiver fr = new FileReceiver(fileName, sharedDir, size,
-				fileServer , connectionLock, this);
+				fileServer, connectionLock, this);
 		if (fr.test()) {
-			fr.setMessage(filePath + "\n" + size, ServerCommand.SendRequestReply_Success);
+			fr.setMessage(filePath + "\n" + size,
+					ServerCommand.SendRequestReply_Success);
 			fr.start();
-			opLog(realName + " - "
-					+ dateFormat.format(cal.getTime()) + " begin to Upload file "+ fr.fileName);
+			opLog(realName + " - " + dateFormat.format(cal.getTime())
+					+ " begin to Upload file " + fr.fileName);
 		} else {
 			sendMessage("Not ready!", ServerCommand.SendRequestReply_Alert);
-			opLog(realName + " - "
-					+ dateFormat.format(cal.getTime()) + " begin to Upload file "+ fr.fileName+" Failed");
+			opLog(realName + " - " + dateFormat.format(cal.getTime())
+					+ " begin to Upload file " + fr.fileName + " Failed");
 			return;
 		}
 	}

@@ -37,7 +37,7 @@ public class Server<ref> extends JFrame {
 
 	private String logDir;// log directory
 	private String shareFileDir;// restore the directory of shared file.
-	
+	private boolean allowRegister = true;
 	File logFile;
 	FileWriter log;
 	File opLogFile;
@@ -140,6 +140,13 @@ public class Server<ref> extends JFrame {
 					.getNamedItem("Value").getNodeValue().toString();
 			break;
 		}
+		NodeList registerDirList = configDoc.getElementsByTagName("Register");
+		for (int i = 0; i < registerDirList.getLength(); ++i) {
+			String tmp = registerDirList.item(i).getAttributes()
+					.getNamedItem("Value").getNodeValue().toString();
+			allowRegister = tmp.equals("0")? false:true;
+			break;
+		}
 	}
 
 	public void startRunning() {
@@ -150,7 +157,7 @@ public class Server<ref> extends JFrame {
 			kick.start();
 			while (true) {
 				try {
-					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory,fileServer,logDir);
+					waiter = new Waiter(j_public, al, count, doc, log, opLog, SharedDirectory,fileServer,logDir,allowRegister);
 					waiter.serve(server);
 					waiter.start();
 					al.add(waiter);
