@@ -25,8 +25,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import Server.Message;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
