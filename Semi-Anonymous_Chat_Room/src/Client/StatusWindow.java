@@ -104,7 +104,6 @@ public class StatusWindow extends JFrame {
 			int progress = 0;
 			if (value instanceof Integer) {
 				progress = (int) value;
-				System.out.println(progress);
 			}
 			setValue(progress);
 			return this;
